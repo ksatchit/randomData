@@ -20,7 +20,8 @@ ADD sysbench/ /sysbench
 ENV PATH /sysbench:$PATH
 WORKDIR /sysbench
 #RUN cd /sysbench && ./autogen.sh && ./configure && make 
-RUN ["/bin/bash", "-c", "echo hello"]
+#RUN ["/bin/bash", "-c", "echo hello"]
+RUN ["/bin/bash", "-c", "ls"]
 
 #RUN ./autogen.sh && ./configure && make
 #RUN ["/bin/bash", "-c", "autogen.sh"] 
