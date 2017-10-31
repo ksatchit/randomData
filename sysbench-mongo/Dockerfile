@@ -18,5 +18,5 @@ RUN cp /usr/include/libbson-1.0/* /usr/include/ \
 
 ADD sysbench/ /sysbench
 WORKDIR /sysbench
-RUN ./autogen.sh && ./configure && make
+RUN ["/bin/bash", "-c", "./autogen.sh && ./configure && make"]
  
