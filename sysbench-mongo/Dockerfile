@@ -18,11 +18,11 @@ RUN cp /usr/include/libbson-1.0/* /usr/include/ \
 
 COPY sysbench/ /sysbench/
 ENV PATH /sysbench:$PATH
-WORKDIR /sysbench
+#WORKDIR /sysbench
 #RUN cd /sysbench && ./autogen.sh && ./configure && make 
 #RUN ["/bin/bash", "-c", "echo hello"]
 #RUN ["/bin/bash", "-c", "ls"]
-RUN ls -la 
+RUN ls /sysbench 
 
 #RUN ./autogen.sh && ./configure && make
 #RUN ["/bin/bash", "-c", "autogen.sh"] 
