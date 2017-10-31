@@ -17,8 +17,11 @@ RUN cp /usr/include/libbson-1.0/* /usr/include/ \
   && cp /usr/include/libmongoc-1.0/* /usr/include/
 
 ADD sysbench/ /sysbench
+ENV PATH /sysbench:$PATH
 WORKDIR /sysbench
-RUN ["/bin/bash", "-c", "autogen.sh"] 
-RUN ./configure 
-RUN make
+RUN ./autogen.sh && ./configure && make
+
+#RUN ["/bin/bash", "-c", "autogen.sh"] 
+#RUN ./configure 
+#RUN make
  
