@@ -16,7 +16,7 @@ RUN apt-get clean \
 RUN cp /usr/include/libbson-1.0/* /usr/include/ \
   && cp /usr/include/libmongoc-1.0/* /usr/include/
 
-COPY sysbench/ /sysbench/
+COPY sysbench /sysbench
 ENV PATH /sysbench:$PATH
 #WORKDIR /sysbench
 #RUN cd /sysbench && ./autogen.sh && ./configure && make 
