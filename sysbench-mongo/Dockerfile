@@ -16,13 +16,14 @@ RUN apt-get clean \
 RUN cp /usr/include/libbson-1.0/* /usr/include/ \
   && cp /usr/include/libmongoc-1.0/* /usr/include/
 
-COPY sysbench /sysbench
-ENV PATH /sysbench:$PATH
+COPY sysbench/ / 
+#ENV PATH /sysbench:$PATH
 #WORKDIR /sysbench
 #RUN cd /sysbench && ./autogen.sh && ./configure && make 
 #RUN ["/bin/bash", "-c", "echo hello"]
 #RUN ["/bin/bash", "-c", "ls"]
-RUN ["/bin/bash", "-c", "cd /sysbench; ls"] 
+#RUN ["/bin/bash", "-c", "ls"] 
+RUN ls 
 
 #RUN ./autogen.sh && ./configure && make
 #RUN ["/bin/bash", "-c", "autogen.sh"] 
