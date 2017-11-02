@@ -22,7 +22,7 @@ ENV PATH /sysbench:$PATH
 #RUN cd /sysbench && ./autogen.sh && ./configure && make 
 #RUN ["/bin/bash", "-c", "echo hello"]
 #RUN ["/bin/bash", "-c", "ls"]
-RUN ls /sysbench 
+RUN ["/bin/bash", "-c", "cd /sysbench; ls"] 
 
 #RUN ./autogen.sh && ./configure && make
 #RUN ["/bin/bash", "-c", "autogen.sh"] 

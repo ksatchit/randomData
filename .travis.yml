@@ -10,3 +10,7 @@ before_install:
   - sudo apt-get install -y curl
 script:
   - make build
+notifications:
+  email: 
+    recipients:
+      - karthik.s@cloudbyte.com
