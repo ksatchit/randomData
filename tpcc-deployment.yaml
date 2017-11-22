@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: tpcc
+  namespace: default 
+  labels:
+    name: tpcc
+spec:
+  replicas: 1
+  template: 
+    metadata:
+      labels: 
+        name: tpcc
+    spec:
+      containers:
+        - resources:
+            limits:
+              cpu: 0.3
+          name: tpcc
+          image: openebs/tests-tpcc-client 
