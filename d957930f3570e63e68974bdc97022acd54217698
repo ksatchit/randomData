@@ -1,0 +1,1 @@
+{"jobID":"f3ed3f0b-1258-45d3-80e0-c7d3e1f2bf22","spec":{"type":"policy","cause":{"Message":"","User":""},"spec":{"default:deployment/tpcc":{"add":{"automated":"true"},"remove":{}}}},"result":null}
