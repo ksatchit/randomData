@@ -1,0 +1,1 @@
+{"jobID":"7c1b9a34-bea6-d9ac-fc68-28bc0fef5ba2","spec":{"type":"policy","cause":{"Message":"","User":""},"spec":{"default:deployment/maya-apiserver":{"add":{"automated":"true"},"remove":{}}}},"result":null}
