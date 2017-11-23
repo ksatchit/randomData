@@ -18,4 +18,4 @@ spec:
             limits:
               cpu: 0.3
           name: tpcc
-          image: ksatchit/custom-tpcc
+          image: ksatchit/custom-tpcc@sha256:5dbf44c2cbd031cc1ca00ea16765d0ec5d503e8c95243842ddc042b683131242
