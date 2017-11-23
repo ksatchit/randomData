@@ -14,11 +14,7 @@ spec:
     spec:
       containers:
         - name: flux-test
-<<<<<<< HEAD
           image: openebs/flux-test:latest
-=======
-          image: openebs/flux-test:master-a000003
->>>>>>> d65c000007cd309b6ef0f60c436bce85b3a84d13
           ports:
             - containerPort: 8080
  
