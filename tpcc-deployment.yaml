@@ -2,8 +2,6 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  annotations:
-    flux.weave.works/automated: "true"
   name: tpcc
   namespace: default 
   labels:
