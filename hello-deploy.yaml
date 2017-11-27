@@ -3,7 +3,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   annotations:
-    flux.weave.works/automated: "true"
+    flux.weave.works/automated: "false"
     flux.weave.works/locked: "false"
   name: hello-deploy
 spec:
