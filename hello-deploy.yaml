@@ -4,7 +4,6 @@ kind: Deployment
 metadata:
   annotations:
     flux.weave.works/automated: "true"
-    flux.weave.works/locked: "true"
   name: hello-deploy
 spec:
   replicas: 2
