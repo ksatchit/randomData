@@ -1,0 +1,1 @@
+{"jobID":"9cc6b05a-3e15-8afe-4dd2-996e19420a46","spec":{"type":"policy","cause":{"Message":"","User":""},"spec":{"default:deployment/hello-deploy":{"add":{"locked":"true"},"remove":{}}}},"result":null}
