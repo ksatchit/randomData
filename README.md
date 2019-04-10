@@ -1,5 +1,3 @@
-# Automation-Info
-Has data around automation - tools, scripts, languages, best practices etc..,
+### randomData
 
-Sample commit 
-Explore Keel
+Random snippets & artifacts on test automation, tools, kubernetes, etc., 

@@ -1,0 +1,108 @@
+# Reference: https://www.exclamationlabs.com/blog/continuous-deployment-to-npm-using-gitlab-ci/
+
+# GitLab uses docker in the background, so we need to specify the 
+# image versions. This is useful because we're freely to use
+# multiple node versions to work with it. They come from the docker
+# repo.
+# Uses NodeJS V 9.4.0
+image: node:9.4.0
+
+# And to cache them as well.
+cache:
+  paths:
+    - node_modules/
+    - .yarn
+
+# We tell GitLab to install all the packages
+# before running anything.
+# Docker images come with yarn preinstalled
+before_script:  
+  - apt-get update -qq && apt-get install
+
+# You specify the stages. Those are the steps that GitLab will go through 
+# Order matters. 
+stages:
+  - build
+  - test
+  - staging
+  - openMr
+  - production
+
+Build:
+  stage: build
+  tags:
+    - node
+  before_script: 
+    - yarn config set cache-folder .yarn
+    - yarn install 
+  script:
+    - npm run build
+
+Test:
+  stage: test
+  tags:
+  - node
+  before_script: 
+    - yarn config set cache-folder .yarn
+    - yarn install 
+  script:
+  # Installs Chrome
+    - wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub |  apt-key add -
+    - echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' |  tee /etc/apt/sources.list.d/google-chrome.list
+    - apt-get update 
+    - apt-get install google-chrome-stable -y
+  # Runs the tests.
+    - npm run test:karma-headless
+
+
+Deploy to Staging:
+  stage: staging
+  tags:
+    - node
+  before_script:
+    # Generates to connect to the AWS unit the SSH key.
+    - mkdir -p ~/.ssh
+    - echo -e "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    # Sets the permission to 600 to prevent a problem with AWS
+    # that it's too unprotected.
+    - chmod 600  ~/.ssh/id_rsa
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'   
+  script:     
+    - bash ./gitlab-deploy/.gitlab-deploy.staging.sh   
+  environment:     
+    name: staging     
+    # Exposes a button that when clicked take you to the defined URL:
+    url: http://ec2-13-59-173-91.us-east-2.compute.amazonaws.com:3001   
+
+# Remember to have the PRIVATE_TOKEN generated. This is only needed to be done once per project and not per user.
+# Once you add it (Needs Master priviliges) as a Secret Variable, it should work.
+Open Merge Request:
+  # Got it from here: https://gitlab.com/tmaier/gitlab-auto-merge-request/blob/develop/.gitlab-ci.yml
+  image: tmaier/gitlab-auto-merge-request
+  stage: openMr
+  tags:
+    - node
+  script:
+    - bash ./gitlab-deploy/auto-merge-request.sh # The name of the script
+  
+
+
+Deploy to Production:
+  stage: production
+  tags:
+    - node
+  before_script:
+  # Generates to connect to the AWS unit the SSH key.
+    - mkdir -p ~/.ssh
+    - echo -e "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    # Sets the permission to 600 to prevent a problem with AWS
+  # that it's too unprotected.
+    - chmod 600  ~/.ssh/id_rsa
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'   
+  script:     
+    - bash ./gitlab-deploy/.gitlab-deploy.prod.sh   
+  environment:     
+    name: production     
+    # Exposes a button that when clicked take you to the defined URL:
+    url: http://ec2-13-59-173-91.us-east-2.compute.amazonaws.com:81   
+  when: manual
