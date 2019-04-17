@@ -22,21 +22,13 @@ metadata:
   # Annotations which will be understood by Litmus Operator 
   annotations:
 
-    ## <--- Mandatory annotation to enable chaos on this app --->
+    ## <--- Mandatory annotations to enable chaos on this app --->
 
     ### Analogy: similar to "Lock" feature in flux. If true, chaos occurs. Else, request for chaos is overridden
     litmus.io/chaos: "true"
  
     ### Analogy: similar to "volumeMount" request in stateful apps. The one that refers to "chaos claim" name
     litmus.io/experiment: "flaky-nginx"
-
-    ## <--- Optional annotations in case chaos needs to be scheduled --->
-
-    ### Analogy: similar to the "automated" feature in flux. Monitoring begins.
-    litmus.io/scheduled: "true"
-
-    ### chaos schedule, say, "quarter-hourly", "half-hourly", "hourly", "bi-hourly", "trihoral", "daily"
-    litmus.io/interval: "hourly"
 
 spec:
   replicas: 3
@@ -71,23 +63,42 @@ metadata:
   namespace: nginx
   
   ## A predefined Chaos template type 
-  ## Analogy: *Similar* in function to storage classes (in reality, closer spec-wise to a json configmap or another static CR). 
+  ## Analogy: *Similar* in function to storage classes (in reality, closer spec-wise to a configmap or another CR). 
   ## This can be readily deployable from Litmus similar to storageclasses.yaml
   ## Will contain params "specific" to that chaos operation w/ default values. SRE/Dev/DevOps can update/apply & keep ready 
   ## Overrides for params aka storageclass annotations can be introduced. Maybe even reuse CAS templates model one day
-  ## The use of this is that the *LitmusExperiment* resource, i.e., the interface to invoke chaos will be kept homogeneous/standard. 
+  ## The use of this is that the *LitmusExperiment* resource, i.e., the interface to invoke chaos will be kept homogeneous. 
   type: pod-egress-delay
 
 spec:
   ## This will be used to identify AUT 
   selector:   
     app: nginx
-
+ 
   ## Component list can be kept to a minimum
-  container: "nginx" 
-  nwinterface: "eth0"
-  node: "" # n/a
-  disk: "" # n/a
+  component:
+    container: "nginx" 
+    nwinterface: "eth0"
+    node: "" # n/a
+    pvc: ""  # n/a
+    disk: "" # n/a
+
+  ## Schedule chaos attributes
+  ## NOTE: An app can be subject to more than 1 LE w/ their own schedules
+
+  schedule:
+    # quarter-hourly, half-hourly, hourly, bi-hourly, trihoral, daily
+    interval: "hourly"
+    excluded-times: "22:00-08:00,11:00-13:00"
+    excluded-days: "Sat,Sun"
+
+  ## Attribute to say whether Litmus Operator can schedule another chaos experiment..
+  ## ..if there is an ongoing experiment on the same app (same experiment or different)
+  ## Can be determined via OwnerReferences, say, app-deployment name
+
+  ## Supported values: Forbid, Allow 
+
+  concurrencyPolicy: "Forbid" 
 
 ---
 ## Chaos template referred in LitmusExperiment as "type". Allows granular definition of a chaos experiment
