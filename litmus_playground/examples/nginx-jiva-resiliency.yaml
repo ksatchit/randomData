@@ -5,12 +5,9 @@ metadata:
   labels:
     app: nginx
   annotations:
-    ## These still apply, and used by LiOperator 
     ## Patch the app deploy by setting chaos to 'false' to stop chaos on app storage
     ## above may be done after dev is confident of resiliency
     litmus.io/chaos: "true"
-    litmus.io/scheduled: "true"
-    litmus.io/interval: "1200"
 spec:
   replicas: 3
   selector:
