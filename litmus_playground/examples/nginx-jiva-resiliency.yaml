@@ -58,6 +58,5 @@ spec:
   ports:
   - port: 80
     name: web
-  clusterIP: None
   selector:
     app: nginx 
