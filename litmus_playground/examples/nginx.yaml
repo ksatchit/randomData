@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+
+  # Annotations which will be understood by Litmus Operator 
+  annotations:
+
+    ## <--- Mandatory annotation to enable chaos on this app --->
+
+    ### Analogy: similar to "Lock" feature in flux. If true, chaos occurs. Else, request for chaos is overridden
+    litmus.io/chaos: "true"
+ 
+    ### Analogy: similar to "volumeMount" request in stateful apps. The one that refers to "chaos claim" name
+    litmus.io/experiment: "slow-nginx"
+
+    ## <--- Optional annotations in case chaos needs to be scheduled --->
+
+    ### Analogy: similar to the "automated" feature in flux. Monitoring begins.
+    litmus.io/scheduled: "true"
+
+    ### chaos interval, say, in seconds
+    litmus.io/interval: "1200"
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+
+---
+## This is the chaos action/experiment profile requested for the nginx app. Triggers the actual litmus test/experiment job
+## Analogy: Similar to PV Claim Request. This is chaos action requested by developer on nginx app
+## Results of this experiment will be captured in the litmus result custom resource bearing name of generated job
+## Refer: One day evolves to https://docs.google.com/document/d/14ySZyob45z-Zf7HmZbqfc2Lb6qbelU5OszurvZrPo50/edit#heading=h.6r97em67qahl
+
+apiVersion: litmus.io/v1alpha1
+kind: LitmusExperiment
+metadata:
+
+  ## Eventually launched chaos litmusbook/job will bear <name>-<hash>
+  name: slow-nginx
+
+  ## Look for AUT (App-Under-Test) in this namespace
+  namespace: nginx
+  
+  ## A predefined Chaos template type 
+  ## Analogy: *Similar* in function to storage classes (in reality, closer spec-wise to a json configmap or another static CR). 
+  ## This can be readily deployable from Litmus similar to storageclasses.yaml
+  ## Will contain params "specific" to that chaos operation w/ default values. SRE/Dev/DevOps can update/apply & keep ready 
+  ## Overrides for params aka storageclass annotations can be introduced. Maybe even reuse CAS templates model one day
+  ## The use of this is that the *LitmusExperiment* resource, i.e., the interface to invoke chaos will be kept homogeneous/standard. 
+  type: pod-egress-delay
+
+spec:
+  ## This will be used to identify AUT 
+  selector:   
+    app: nginx
+
+  ## Component list can be kept to a minimum
+  container: "nginx" 
+  nwinterface: "eth0"
+  node: "" # n/a
+  disk: "" # n/a
+
+---
+## Chaos template referred in LitmusExperiment as "type". Allows granular definition of a chaos experiment
+## By bundling chaos specifics under attribute "data", we make it flexible
+
+apiVersion: litmus.io/v1alpha1
+kind: ChaosTemplate
+metadata: 
+  name: pod-egress-delay
+spec:
+  data: |
+    delay: "600ms"
+    runtime: "120s"
+    jitter: "10ms"
+    ditribution: "pareto"
+  
+  
