@@ -29,7 +29,7 @@ metadata:
     litmus.io/chaos: "true"
  
     ### Analogy: similar to "volumeMount" request in stateful apps. The one that refers to "chaos claim" name
-    litmus.io/experiment: "slow-nginx"
+    litmus.io/experiment: "flaky-nginx"
 
     ## <--- Optional annotations in case chaos needs to be scheduled --->
 
@@ -66,7 +66,7 @@ kind: LitmusExperiment
 metadata:
 
   ## Eventually launched chaos litmusbook/job will bear <name>-<hash>
-  name: slow-nginx
+  name: flaky-nginx
 
   ## Look for AUT (App-Under-Test) in this namespace
   namespace: nginx
