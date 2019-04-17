@@ -36,8 +36,8 @@ metadata:
     ### Analogy: similar to the "automated" feature in flux. Monitoring begins.
     litmus.io/scheduled: "true"
 
-    ### chaos interval, say, in seconds
-    litmus.io/interval: "1200"
+    ### chaos schedule, say, "quarter-hourly", "half-hourly", "hourly", "bi-hourly", "trihoral", "daily"
+    litmus.io/interval: "hourly"
 
 spec:
   replicas: 3
