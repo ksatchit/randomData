@@ -1,0 +1,52 @@
+---
+## Suppose Developer of stateful app wants to continuously inject 
+## chaos into storage in the background to see how app behaves - 
+## & we provide a hook into the storageclass to enable him to do that
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: jiva-resilience-sc
+  annotations:
+    openebs.io/cas-type: jiva
+    cas.openebs.io/config: |
+
+        ## Today, each of these attributes is mapped to a "runTask" CR
+        ## The runTask has a 'meta' portion which is a key-value mapping to..
+        ## ..hold task metadata & 'post' portion which performs a 'task' or..
+        ## ..action.
+      - name: ReplicaCount
+        value: "3"
+
+        ## Below can be mapped to a CR (our "chaosTemplate" kind) & ..
+        ## ..Maya CAS infra can understand these. The cas engine can ..
+        ## ..then *autogenerate* the LitmusExperiment by consuming below ..
+        ## ..attributes. Creation of the LE automatically triggers chaos ..
+        ## ..based on the same workflow discussed in nginx.yaml. So, this..
+        ## ..is akin to dynamic provisioning of chaos (albeit for storage)..
+        ## ..while what we saw in nginx.yaml is an explicit way for dev to..
+        ## ..provision/run chaos by including the LE spec by himself.
+      - name: ChaosObject
+        value: "controller"
+
+      - name: ChaosType
+        value: "pod-egress-delay"
+
+provisioner: openebs.io/provisioner-iscsi
+
+---
+## <--- Repasting chaosTemplate for context ---> 
+
+## Chaos template referred in LitmusExperiment as "type". Allows granular definition of a chaos experiment
+## By bundling chaos specifics under attribute "data", we make it flexible
+
+apiVersion: litmus.io/v1alpha1
+kind: ChaosTemplate
+metadata:
+  name: pod-egress-delay
+spec:
+  data: |
+    delay: "600ms"
+    runtime: "120s"
+    jitter: "10ms"
+    ditribution: "pareto"

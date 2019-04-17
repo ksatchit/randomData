@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+  annotations:
+    ## These still apply, and used by LiOperator 
+    ## Patch the app deploy by setting chaos to 'false' to stop chaos on app storage
+    ## above may be done after dev is confident of resiliency
+    litmus.io/chaos: "true"
+    litmus.io/scheduled: "true"
+    litmus.io/interval: "1200"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: /usr/share/nginx/html
+            name: nginx-vol
+      volumes:
+        - name: nginx-vol
+          persistentVolumeClaim:
+            claimName: nginx-vol-claim
+
+--- 
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nginx-vol-claim
+spec:
+  ## Select the resiliency storage class that injects chaos
+  storageClassName: jiva-resilience-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5G
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None
+  selector:
+    app: nginx 
