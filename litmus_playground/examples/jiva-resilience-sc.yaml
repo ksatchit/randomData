@@ -15,6 +15,7 @@ metadata:
         ## The runTask has a 'meta' portion which is a key-value mapping to..
         ## ..hold task metadata & 'post' portion which performs a 'task' or..
         ## ..action.
+
       - name: ReplicaCount
         value: "3"
 
@@ -26,6 +27,7 @@ metadata:
         ## ..is akin to dynamic provisioning of chaos (albeit for storage)..
         ## ..while what we saw in nginx.yaml is an explicit way for dev to..
         ## ..provision/run chaos by including the LE spec by himself.
+
       - name: ChaosObject
         value: "controller"
 
