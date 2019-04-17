@@ -22,8 +22,9 @@ metadata:
         ## Below can be mapped to a CR (our "chaosTemplate" kind) & ..
         ## ..Maya CAS infra can understand these. The cas engine can ..
         ## ..then *autogenerate* the LitmusExperiment by consuming below ..
-        ## ..attributes. Creation of the LE automatically triggers chaos ..
-        ## ..based on the same workflow discussed in nginx.yaml. So, this..
+        ## ..attributes (say, w/ name pvcid-chaos-<hash> - for trackback).
+        ## Creation of the LE automatically triggers chaos based on the ..
+        ## ..same workflow discussed in nginx-general-app-chaos.yaml. So, this..
         ## ..is akin to dynamic provisioning of chaos (albeit for storage)..
         ## ..while what we saw in nginx.yaml is an explicit way for dev to..
         ## ..provision/run chaos by including the LE spec by himself.
