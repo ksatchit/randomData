@@ -1,0 +1,31 @@
+---
+stages:
+  - chaos
+
+network-chaos-job:
+  stage: chaos
+  image: litmus-runner:latest
+  script: 
+    - ./pod-nw-chaos --type=delay --time=600ms --duration=120s --namespace=app-ns --label='app=mysql'
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+  

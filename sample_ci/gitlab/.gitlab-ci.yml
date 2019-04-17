@@ -1,0 +1,30 @@
+---
+include:
+  - remote: 'https://github.com/iamdev/litmus/raw/master/nw-templates/network-chaos-template.yml'
+
+stages:
+  - build
+  - test
+  - staging
+  - chaos
+  - production
+
+Build:
+  stage: build
+  script: 
+    - <abc>
+Test:
+  stage: test
+  script: 
+    - <def>
+Deploy to Staging:
+  stage: staging
+  script:
+    - <ghi>
+Inject Chaos:
+  stage: chaos
+  
+   
+  
+  
+

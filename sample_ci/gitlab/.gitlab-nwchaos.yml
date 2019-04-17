@@ -1,0 +1,36 @@
+---
+variables:
+  delay: 600ms
+  runtime: 120s
+  app_ns: default
+  pod_label: 'app=mysql'
+  
+network-chaos-job:
+  stage: chaos
+  image: litmus-runner:latest
+  script: 
+    - ./pod-nw-chaos --type=egress-delay --time=$delay --duration=$runtime --namespace=$app_ns --label=$pod_label
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
+  
