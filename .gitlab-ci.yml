@@ -1,0 +1,21 @@
+stages:
+  - build
+  - test
+  - deploy
+
+job 1:
+  stage: build
+  script: 
+    - echo "Running build stage" && sleep 10
+
+job 2:
+  stage: test
+  script: 
+    - echo "Running test stage" && sleep 10
+
+job 3:
+  stage: deploy
+  script: 
+    - echo "Running deploy stage" && sleep 10
+
+
