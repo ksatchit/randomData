@@ -1,0 +1,88 @@
+#!/bin/bash
+
+set -x -e 
+
+derive_app_details(){
+
+ ##TODO: 
+  # jsonpath filters
+  # dictionary/key:value for appinfo, 
+  # handling varying lengths for app metadata
+  # handling cases where more than 1 pvc exists
+
+ applabel=$(kubectl get le ${LITMUS_EXPERIMENT} -o custom-columns=:spec.appinfo.applabel --no-headers)
+ appns=$(kubectl get le ${LITMUS_EXPERIMENT} -o custom-columns=:spec.appinfo.appns --no-headers)
+ apppvc=$(kubectl get pods -n ${appns} -l ${applabel} --no-headers -o custom-columns=:spec.volumes[].persistentVolumeClaim.claimName)
+ echo "${applabel},${appns},${apppvc}"
+}
+
+derive_chaos_details(){
+
+ ##TODO:
+  # handling varying lengths for chaos metadata
+  # lookup table/reference json spec to hold relevant chaos params
+
+ chaosTemplate=$(kubectl get le ${LITMUS_EXPERIMENT} -o custom-columns=:spec.chaostype --no-headers)
+ if [[ $chaosTemplate == "openebs-target-failure" ]]; then
+    litmusJobPath='/experiments/chaos/openebs_target_failure/run_litmus_test.yml'
+    litmusJobLabel=
+    echo "${litmusJobPath}"
+ fi 
+}
+
+precondition_litmus_job(){
+
+  ##TODO: 
+   # Making the job run imperative (kubectl run job <args>) 
+   # This will ensure the precondition step is not needed
+  
+  kubectl set env -f ${litmusJobPath} APP_NAMESPACE=${appns} TARGET_NAMESPACE=${appns} APP_LABEL=${applabel} APP_PVC=${apppvc} --dry-run -o yaml > ready_litmus_test.yml
+
+}
+
+run_litmus_job(){
+
+  ##TODO: 
+   # Return strings may-be different for non-gke
+   # Get labels of job from yaml, or define it imperatively
+    
+  jobname=$(kubectl create -f ready_litmus_test.yml | cut -d "/" -f 2) 
+}
+
+monitor_litmus_job(){
+
+  litmusPodCmd="kubectl get pod --no-headers -n litmus -o jsonpath='{.items[?(@.metadata.labels.job-name==\"${jobname}\")].metadata.name}'"
+  litmus_pod=$(eval ${litmusPodCmd}); retcode=$?
+  if [ ${retcode} -ne 0 ]; then
+    echo "Unable to get litmus pod name, exiting"
+    exit 1
+  fi 
+
+  jobStateCmd="kubectl get pod ${litmus_pod} --no-headers -n litmus -o custom-columns=:status.phase"
+
+  while true; do
+  jstate=$(eval ${jobStateCmd}); rc=$?
+  if [[ $rc -eq 0 && ! -z $jstate ]]; then
+    if [[ $jstate =~ 'Running' ]]; then
+      sleep 4
+    else break;
+    fi
+  else
+    echo "unable to get litmus job status"; exit 1
+  fi
+ done
+ echo "Litmus test run Job has completed"
+
+}
+
+## Derive app-details (from experiment) (app_label, app_namespace, app_pvc)
+
+if [[ ! -z ${LITMUS_EXPERIMENT} ]]; then
+  derive_app_details;
+  derive_chaos_details;
+  precondition_litmus_job;
+  run_litmus_job;
+  monitor_litmus_job;  
+else echo "Experiment not defined"
+fi 
+
