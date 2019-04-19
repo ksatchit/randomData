@@ -24,7 +24,7 @@ Deploy to Staging:
   # typically this stage will have artifact dependencies (kubeconfig)
   # we have hard-burned it 
 
-  image: ksatchit/appci:demo
+  image: ksatchit/appci:gitlab
   stage: staging
   script:
     - ls /
