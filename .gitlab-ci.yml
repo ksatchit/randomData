@@ -27,12 +27,16 @@ Deploy to Staging:
   image: ksatchit/appci:gitlab
   stage: staging
   script:
-    - ls /
+    - ls / 
+    - pwd
+    - ls
+    - kubectl config current-context
+    - ls ~/.kube
     - cp /admin.conf ~/.kube/config
     - kubectl get pods 
     - kubectl config current-context
     #- kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml --kubeconfig=/admin.conf
-    - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml
+    #- kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml
      
 
 #Inject Chaos:
