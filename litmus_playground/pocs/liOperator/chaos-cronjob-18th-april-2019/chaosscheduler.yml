@@ -1,0 +1,27 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: chaosscheduler
+  namespace: litmus
+spec:
+  schedule: "*/3 * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 15
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: litmus
+          containers:
+          - name: experiment 
+            image: ksatchit/ansible-runner:ci
+            env: 
+              - name: LITMUS_EXPERIMENT
+                value: "disappearing-target"
+            args: 
+              - /bin/bash
+              - -c
+              - date; executeLitmusJob
+          restartPolicy: OnFailure
+

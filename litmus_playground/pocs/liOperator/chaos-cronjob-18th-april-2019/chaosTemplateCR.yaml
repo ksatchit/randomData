@@ -1,0 +1,8 @@
+---
+apiVersion: litmus.io/v1alpha1
+kind: chaosTemplate
+metadata: 
+  name: openebs-target-failure
+spec:
+  data: |
+    mode: target-delete

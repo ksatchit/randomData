@@ -46,7 +46,7 @@ run_litmus_job(){
    # Return strings may-be different for non-gke
    # Get labels of job from yaml, or define it imperatively
     
-  jobname=$(kubectl create -f ready_litmus_test.yml | cut -d "/" -f 2) 
+  jobname=$(kubectl create -f ready_litmus_test.yml | cut -d "/" -f 2 | cut -d " " -f 1) 
 }
 
 monitor_litmus_job(){

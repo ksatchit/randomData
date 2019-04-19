@@ -1,0 +1,53 @@
+---
+## This is the chaos action/experiment profile requested for the nginx app. Triggers the actual litmus test/experiment job
+## Analogy: Similar to PV Claim Request. This is chaos action requested by developer on nginx app
+## Results of this experiment will be captured in the litmus result custom resource bearing name of generated job
+## Refer: One day evolves to https://docs.google.com/document/d/14ySZyob45z-Zf7HmZbqfc2Lb6qbelU5OszurvZrPo50/edit#heading=h.6r97em67qahl
+
+apiVersion: litmus.io/v1alpha1
+kind: LitmusExperiment
+metadata:
+
+  ## Eventually launched chaos litmusbook/job will bear <name>-<hash>
+  name: disappearing-target
+
+spec:
+
+  ## A predefined Chaos template type 
+  ## Analogy: *Similar* in function to storage classes (in reality, closer spec-wise to a configmap or another CR). 
+  ## This can be readily deployable from Litmus similar to storageclasses.yaml
+  ## Will contain params "specific" to that chaos operation w/ default values. SRE/Dev/DevOps can update/apply & keep ready 
+  ## Overrides for params aka storageclass annotations can be introduced. Maybe even reuse CAS templates model one day
+  ## The use of this is that the *LitmusExperiment* resource, i.e., the interface to invoke chaos will be kept homogeneous. 
+  chaostype: openebs-target-failure
+
+  ## This will be used to identify AUT
+ 
+  appinfo: 
+    appns: default
+    applabel: "app=nginx"
+ 
+  ## Component list can be kept to a minimum
+  component:
+    container: ""    
+    nwinterface: ""
+    node: ""        
+    pvc: ""         
+    disk: ""        
+
+  ## Schedule chaos attributes
+  ## NOTE: An app can be subject to more than 1 LE w/ their own schedules
+
+  schedule:
+    # quarter-hourly, half-hourly, hourly, bi-hourly, trihoral, daily
+    interval: ""
+    excluded-times: ""
+    excluded-days: ""
+
+  ## Attribute to say whether Litmus Operator can schedule another chaos experiment..
+  ## ..if there is an ongoing experiment on the same app (same experiment or different)
+  ## Can be determined via OwnerReferences, say, app-deployment name
+
+  ## Supported values: Forbid, Allow 
+
+  concurrencyPolicy: "" 
