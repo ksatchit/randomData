@@ -28,7 +28,7 @@ Deploy to Staging:
   stage: staging
   script:
     - ls /
-    - kubectl get pods --all-namespaces
+    - kubectl get pods 
     - kubectl config current-context
     #- kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml --kubeconfig=/admin.conf
      
