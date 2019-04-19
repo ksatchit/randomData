@@ -27,7 +27,7 @@ Deploy to Staging:
   image: ksatchit/appci:demo
   stage: staging
   script:
-    - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml
+    - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml --kubeconfig=/root/.kube/config
      
 
 #Inject Chaos:
