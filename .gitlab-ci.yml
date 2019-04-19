@@ -1,0 +1,39 @@
+---
+#include:
+  #- remote: 'https://github.com/iamdev/litmus/raw/master/nw-templates/network-chaos-template.yml'
+
+stages:
+  #- build
+  #- test
+  - staging
+  #- chaos
+  #- production
+
+#Build:
+#  stage: build
+#  script: 
+#    - <abc>
+
+#Test:
+#  stage: test
+#  script: 
+#    - <def>
+
+Deploy to Staging:
+  # this will be app developer's custom gitlab runner image
+  # typically this stage will have artifact dependencies (kubeconfig)
+  # we have hard-burned it 
+
+  image: ksatchit/appci:demo
+  stage: staging
+  script:
+    - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml
+     
+
+#Inject Chaos:
+#  stage: chaos
+  
+   
+  
+  
+
