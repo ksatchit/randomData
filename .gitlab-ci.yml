@@ -27,20 +27,14 @@ Deploy to Staging:
   image: ksatchit/appci:gitlab
   stage: staging
   script:
-    - pwd
-    - ls
     - cp /admin.conf ~/.kube/config
-    - kubectl get pods --all-namespaces 
-    - kubectl config current-context
     - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml --kubeconfig=/root/.kube/config 
      
 Inject Pod Failure Chaos:
-##TODO: Pass kubeconfig as artifact
   stage: chaos
   extends: .pod_failure_template
   before_script:
     - cp /admin.conf ~/.kube/config
-    - kubectl config current-context
   variables:
     app_ns: default
     app_label: "app=nginx"
