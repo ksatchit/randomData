@@ -1,12 +1,12 @@
 ---
-#include:
-  #- remote: 'https://github.com/iamdev/litmus/raw/master/nw-templates/network-chaos-template.yml'
+include:
+  - remote: 'https://github.com/karthiksatchitanand/litmus/raw/master/gitlab/pod-templates/pod-failure-template.yml'
 
 stages:
   #- build
   #- test
   - staging
-  #- chaos
+  - chaos
   #- production
 
 #Build:
@@ -27,21 +27,19 @@ Deploy to Staging:
   image: ksatchit/appci:gitlab
   stage: staging
   script:
-    - ls / 
     - pwd
     - ls
-    #- kubectl config current-context
-    - ls ~/.kube
     - cp /admin.conf ~/.kube/config
     - kubectl get pods --all-namespaces 
     - kubectl config current-context
     - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml --kubeconfig=/root/.kube/config 
      
 
-#Inject Chaos:
-#  stage: chaos
-  
+Inject Pod Failure Chaos:
+  stage: chaos
+  extends: .pod_failure_template
+  variables:
+    app_ns: default
+    app_label: "app=nginx"
    
   
-  
-
