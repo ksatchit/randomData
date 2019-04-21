@@ -30,7 +30,7 @@ Deploy to Staging:
     - ls / 
     - pwd
     - ls
-    - kubectl config current-context
+    #- kubectl config current-context
     - ls ~/.kube
     - cp /admin.conf ~/.kube/config
     - kubectl get pods 
