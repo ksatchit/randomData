@@ -1,1 +1,1 @@
-Example ci artifacts. For ex: gitlab templates & jenkins groovy files 
+Example ci artifacts. For ex: gitlab templates & jenkins groovy files. 
