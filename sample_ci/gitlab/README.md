@@ -1,1 +1,1 @@
-Example ci artifacts
+Example ci artifacts. For ex: gitlab templates 
