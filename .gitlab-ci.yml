@@ -35,7 +35,7 @@ Deploy to Staging:
     - cp /admin.conf ~/.kube/config
     - kubectl get pods --all-namespaces 
     - kubectl config current-context
-    - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml 
+    - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml --kubeconfig=~/.kube/config 
      
 
 #Inject Chaos:
