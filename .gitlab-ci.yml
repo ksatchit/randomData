@@ -38,6 +38,9 @@ Inject Pod Failure Chaos:
 ##TODO: Pass kubeconfig as artifact
   stage: chaos
   extends: .pod_failure_template
+  before_script:
+    - cp /admin.conf ~/.kube/config
+    - kubectl config current-context
   variables:
     app_ns: default
     app_label: "app=nginx"
