@@ -35,6 +35,7 @@ Deploy to Staging:
     - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml --kubeconfig=/root/.kube/config 
      
 Inject Pod Failure Chaos:
+##TODO: Pass kubeconfig
   stage: chaos
   extends: .pod_failure_template
   variables:
