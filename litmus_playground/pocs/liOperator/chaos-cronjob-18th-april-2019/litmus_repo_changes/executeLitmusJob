@@ -25,7 +25,6 @@ derive_chaos_details(){
  chaosTemplate=$(kubectl get le ${LITMUS_EXPERIMENT} -o custom-columns=:spec.chaostype --no-headers)
  if [[ $chaosTemplate == "openebs-target-failure" ]]; then
     litmusJobPath='/experiments/chaos/openebs_target_failure/run_litmus_test.yml'
-    litmusJobLabel=
     echo "${litmusJobPath}"
  fi 
 }
