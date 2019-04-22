@@ -30,7 +30,7 @@
 
 - Used `forbid` concurrency policy in cronjob, i.e., chaos job is not launched if previous 
   is not terminated. Can cause a job never get scheduled afterwards if first one is stuck. 
-  Need activeDeadlineSeconds
+  Need `activeDeadlineSeconds`. 
 
 - `startingDeadlineSeconds` is good to give (esp small value). If cluster is down/cron job 
    could not be scheduled, than no of missed instances is validated against the duration of 
