@@ -43,12 +43,12 @@
 - The chaos should be triggered/launched the moment `le` is applied (P0)
 - The converse of above should also be true. Launching an annotation w/ existing `le` CRs 
   should also trigger chaos (P0)
-- Annotation (litmus.io/chaos) should be checked (for true/false) to check if chaos should be 
+- Annotation (**litmus.io/chaos**) should be checked (for true/false) to see if chaos should be 
   triggered (P0) 
 - `ct` should be pre-defined and applied beforehand like storageclasses as part of litmus 
    setup (P0)
 - There should be default `le` & `ct` as part of litmus setup (P0)
-- Annotation (litmus.io/experiment) should take comma separated list of experiment names which 
+- Annotation (**litmus.io/experiment**) should take comma separated list of experiment names which 
   should be scheduled & managed independently (??) (P1)
 - `le` & `lr` are independednt (??). How can a user derive results. Link job run instance with
    `lr`, say, via timestamps (P1)
