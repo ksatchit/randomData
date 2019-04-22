@@ -1,0 +1,1 @@
+- https://github.com/karthiksatchitanand/litmus/blob/master/gitlab/pod-templates/pod-failure-template.yml

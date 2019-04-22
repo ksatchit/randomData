@@ -1,0 +1,1 @@
+- https://github.com/ksatchit/randomData/blob/master/.gitlab-ci.yml
