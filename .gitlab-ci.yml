@@ -27,7 +27,12 @@ Deploy to Staging:
   image: ksatchit/appci:gitlab
   stage: staging
   script:
+    - pwd
+    - ls ~/.kube
+    - whoami
+    - cat /root/.kube/config ## question is does runner pod have ~/.kube/config?? 
     - cp /admin.conf ~/.kube/config
+    - ls ~/.kube
     - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml --kubeconfig=/root/.kube/config 
      
 Inject Pod Failure Chaos:
