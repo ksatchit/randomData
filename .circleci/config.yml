@@ -8,5 +8,5 @@ jobs:
       - run:
           name: helm-github-pages
           environment:
-            - GITHUB_PAGES_REPO: USERNAME/helm-charts
+            - GITHUB_PAGES_REPO: ksatchit/chaos-charts
           command: wget -O - https://raw.githubusercontent.com/ksatchit/helm-github-pages/master/publish.sh | sh
