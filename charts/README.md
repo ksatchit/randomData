@@ -1,5 +1,4 @@
 ## HELM SETUP
-=============
 
 - Get Helm
 
@@ -42,24 +41,26 @@ kubectl create -f clusterrole.yaml
 
 - Create Tiller service account in kube-system namespace, bind to clusterrole w/ clusterrolebinding
 
-```kubectl create serviceaccount -n kube-system tiller
+```
+kubectl create serviceaccount -n kube-system tiller
 
-kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller```
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+```
 
 - Initialize helm w/ service account Tiller
 
-```helm init --service-account tiller
+```
+helm init --service-account tiller
 
 kubectl --namespace kube-system get pods | grep tiller
-  tiller-deploy-2885612843-xrj5m   1/1       Running   0   2d```
+  tiller-deploy-2885612843-xrj5m   1/1       Running   0   2d
+```
 
 ## CREATE & PUBLISH YOUR OWN CHARTS
-===================================
 
 - Create helm chart
 
 ```helm create mychart```
-
 
 - Define Templates Structure
 
@@ -73,7 +74,8 @@ kubectl --namespace kube-system get pods | grep tiller
 
 - Install the chart with desired runtime values
 
-```karthik_satchitanand@cloudshell:~/helm_trials (argon-tractor-237811)$ helm install ./k8schaos --set configuration.podDelete.executorLib=litmus --set configuration.containerKill.executorImage=ansible-runner:ci
+```
+karthik_satchitanand@cloudshell:~/helm_trials (argon-tractor-237811)$ helm install ./k8schaos --set configuration.podDelete.executorLib=litmus --set configuration.containerKill.executorImage=ansible-runner:ci
 
 NAME:   giggly-tarsier
 LAST DEPLOYED: Fri May  3 15:12:08 2019
@@ -93,7 +95,8 @@ NOTES:
 
 - Upgrade helm release w/ some changed values  
 
-```karthik_satchitanand@cloudshell:~/helm_trials (argon-tractor-237811)$ helm upgrade giggly-tarsier ./k8schaos --set configuration.podDelete.e
+```
+karthik_satchitanand@cloudshell:~/helm_trials (argon-tractor-237811)$ helm upgrade giggly-tarsier ./k8schaos --set configuration.podDelete.e
 xecutorLib=chaostoolkit                                                                                                                     
 Release "giggly-tarsier" has been upgraded. Happy Helming!
 LAST DEPLOYED: Fri May  3 15:28:54 2019
@@ -113,8 +116,10 @@ NOTES:
 
 - Package helm chart to share w/ users 
 
-```karthik_satchitanand@cloudshell:~/helm_trials (argon-tractor-237811)$ helm package ./k8schaos
-Successfully packaged chart and saved it to: /home/karthik_satchitanand/helm_trials/k8schaos-0.1.0.tgz```
+```
+karthik_satchitanand@cloudshell:~/helm_trials (argon-tractor-237811)$ helm package ./k8schaos
+Successfully packaged chart and saved it to: /home/karthik_satchitanand/helm_trials/k8schaos-0.1.0.tgz
+```
 
 
 - Setup GH (githubPages) based helm-repository
@@ -124,15 +129,18 @@ Successfully packaged chart and saved it to: /home/karthik_satchitanand/helm_tri
 - helm repo list - shows mapped to stable charts by default
 
 
-```karthik_satchitanand@cloudshell:~/helm_trials/randomData/.circleci (argon-tractor-237811)$ helm repo list
+```
+karthik_satchitanand@cloudshell:~/helm_trials/randomData/.circleci (argon-tractor-237811)$ helm repo list
 NAME    URL
 stable  https://kubernetes-charts.storage.googleapis.com
-local```   
+local
+```   
 
 
 - Add our remote repo: 
 
-```karthik_satchitanand@cloudshell:~/helm_trials/randomData/.circleci (argon-tractor-237811)$ helm repo add ksatchit https://ksatchit.github.io/chaos-charts
+```
+karthik_satchitanand@cloudshell:~/helm_trials/randomData/.circleci (argon-tractor-237811)$ helm repo add ksatchit https://ksatchit.github.io/chaos-charts
 "ksatchit" has been added to your repositories
 
 
@@ -164,13 +172,3 @@ pod-delete      1s
 NOTES:
 ##TODO: Describe helpfule chaos-related kubectl commands constructed using templates
 ```
-
-
-
-
-
-
-
-
-
-
