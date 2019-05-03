@@ -1,0 +1,79 @@
+---
+## An experiment is the definition of a chaos test and is listed as an item 
+## in the chaos engine to be run against a given app. The results upon running
+## this experiment is relayed back to the chaos engine which invoked it.
+
+## A predefined Chaos template. Analogy: *Similar* in function to storage 
+## classes. Will contain params "specific" to that chaos operation w/ default 
+## values explicitly specified.
+
+## Experiments can be pulled from litmus charts and are versioned based on 
+## chart.
+
+## Charts should (not?) be auto-upgraded
+
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosExperiment
+metadata:
+
+  ## Eventually launched chaos litmusbook/job will bear <name>-<hash>
+  name: container-kill
+  labels:
+    litmuschaos.io/name: {{ include "k8schaos.name" . }}
+    litmuschaos.io/instance: {{ .Release.Name }}
+    helm.sh/chart: {{ include "k8schaos.chart" . }}
+
+description:
+  message: |
+    Kills a container belonging to an application pod 
+
+spec:
+{{- with .Values.configuration }}
+{{- with .containerKill }} 
+  
+  ## A low-level definition of chaos parameters which is fed to the executor
+  ## for running the experiment.
+
+  ## Some experiments need more info on the "object of chaos". For example, in case 
+  ## of container crash tests in a multi-container app, it is necessary to know both 
+  ## general app info (namespace, labels) as well as container name which has to undergo
+  ## failures. This Component info is generally kept to a minimum and passed as ENV to 
+  ## the actual chaos-runner/executor pod/container.
+ 
+  definition: 
+
+    labels:
+      name: container-kill
+
+    image: {{ .executorImage }}
+
+    env:
+      - name: ANSIBLE_STDOUT_CALLBACK
+        value: {{ .ansibleStdoutCallback }}
+
+      ## Injected by chaosengine
+      - name: APP_NAMESPACE
+        value: ""              
+
+      ## Injected by chaosengine 
+      - name: APP_LABEL        
+        value: ""
+
+      - name: TARGET_CONTAINER
+        value: {{ .targetContainer }}
+
+      - name: KILL_MODE
+        value: {{ .killMode }}
+
+      ## The chaos operator can use different execution frameworks to achieve
+      ## to achieve a certain chaos operation. It could use Litmus or Chaostoolkit
+      ## etc..,
+
+      - name: LIB
+        value: {{ .executorLib }}
+
+    command: ["/bin/bash"]
+    args: ["-c", "ansible-playbook ./experiments/chaos/container_kill/test.yml -i /etc/ansible/hosts -vv; exit 0"]
+    
+{{- end }}
+{{- end }} 

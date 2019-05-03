@@ -1,0 +1,41 @@
+# Default values for k8schaos 
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+configuration:
+ 
+  # Parameters for the kind ChaosExperiment. These can be 
+  # overridden by the chaosEngine. The CRs can be manually
+  # edited with desired defaults for the following attributes
+  # as well. 
+
+  # Typically assigned at install time to map to the AUT
+  # (Application-Under-Test).
+  
+  podDelete:
+
+    # The chaos operator can use different execution frameworks to achieve
+    # to achieve a certain chaos operation. It could use Litmus or Chaostoolkit
+    # etc..,
+    executorLib: 
+
+    # Image version of the executor container
+    executorImage:        
+
+    # Plugin used to view playbooks logs
+    ansibleStdoutCallback: 
+
+    # Delete operation type 
+    forceDelete: 
+
+  containerKill: 
+
+    executorLib: 
+    executorImage: 
+    ansibleStdoutCallback: 
+
+    # Name of container to be killed
+    targetContainer: 
+
+    # Type of kill operation
+    killMode: 
