@@ -124,7 +124,7 @@ Successfully packaged chart and saved it to: /home/karthik_satchitanand/helm_tri
 
 - Setup GH (githubPages) based helm-repository
   - Procedure: https://github.com/int128/helm-github-pages
-  - GH-Pages repo for the demo: https://github.com/ksatchit/chaos-charts
+  - GH-Pages repo for the demo: https://github.com/ksatchit/chaos-charts/tree/gh-pages
 
 
 - helm repo list - shows mapped to stable charts by default
