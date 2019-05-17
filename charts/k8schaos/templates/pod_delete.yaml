@@ -59,8 +59,11 @@ spec:
       - name: APP_LABEL         
         value: ""
 
-      - name: FORCE_DELETE
-        value: {{ .forceDelete }}
+      - name: TOTAL_CHAOS_DURATION
+        value: {{ .totalChaosDuration }}
+
+      - name: CHAOS_INTERVAL
+        value: {{ .chaosInterval }}
 
       ## The chaos operator can use different execution frameworks to achieve
       ## to achieve a certain chaos operation. It could use Litmus or Chaostoolkit
