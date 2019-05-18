@@ -51,14 +51,6 @@ spec:
       - name: ANSIBLE_STDOUT_CALLBACK
         value: {{ .ansibleStdoutCallback }}
 
-      ## Injected by chaosengine
-      - name: APP_NAMESPACE
-        value: ""              
-
-      ## Injected by chaosengine 
-      - name: APP_LABEL        
-        value: ""
-
       - name: TARGET_CONTAINER
         value: {{ .targetContainer }}
 
