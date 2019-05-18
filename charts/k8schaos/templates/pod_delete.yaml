@@ -47,6 +47,8 @@ spec:
 
     image: {{ .executorImage }}
 
+    litmusbook: "/experiments/chaos/kubernetes/pod_delete/run_litmus_test.yml"
+
     env:
       - name: ANSIBLE_STDOUT_CALLBACK
         value: {{ .ansibleStdoutCallback }}

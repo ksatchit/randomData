@@ -45,6 +45,8 @@ spec:
     labels:
       name: container-kill
 
+    litmusbook: "/experiments/chaos/kubernetes/container_kill/run_litmus_test.yml"
+
     image: {{ .executorImage }}
 
     env:
