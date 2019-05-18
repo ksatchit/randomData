@@ -18,7 +18,6 @@ metadata:
 
   ## Eventually launched chaos litmusbook/job will bear <name>-<hash>
   name: pod-delete
-  namespace: {{ .Release.namespace }}
   labels:
     litmuschaos.io/name: {{ include "k8schaos.name" . }}
     litmuschaos.io/instance: {{ .Release.Name }}
