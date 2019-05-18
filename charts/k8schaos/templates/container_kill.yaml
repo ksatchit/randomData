@@ -18,7 +18,7 @@ metadata:
 
   ## Eventually launched chaos litmusbook/job will bear <name>-<hash>
   name: container-kill
-  namspace: {{ .Release.Namespace }}
+  namspace: {{ .Release.namespace }}
   labels:
     litmuschaos.io/name: {{ include "k8schaos.name" . }}
     litmuschaos.io/instance: {{ .Release.Name }}
