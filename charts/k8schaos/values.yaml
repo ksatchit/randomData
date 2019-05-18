@@ -26,10 +26,10 @@ configuration:
     ansibleStdoutCallback: 
 
     # Total Chaos Period
-    totalChaosDuration: 
+    totalChaosDuration: 15
 
     # Chaos Interval
-    chaosInterval: 
+    chaosInterval: 5
 
   containerKill: 
 
@@ -38,7 +38,7 @@ configuration:
     ansibleStdoutCallback: 
 
     # Name of container to be killed
-    targetContainer: 
+    targetContainer: "nginx" 
 
     # Type of kill operation
     killMode: 
