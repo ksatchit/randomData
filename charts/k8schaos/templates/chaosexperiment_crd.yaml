@@ -16,7 +16,7 @@ spec:
     listKind: ChaosExperimentList
     plural: chaosexperiments
     singular: chaosexperiment
-  scope: Cluster
+  scope: Namespaced
   subresources:
     status: {}
   validation:
