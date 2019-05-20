@@ -3,9 +3,9 @@ kind: CustomResourceDefinition
 metadata:
   name: chaosexperiments.litmuschaos.io
   labels:
-    app.kubernetes.io/name: {{ include "k8schaos.name" . }}
+    app.kubernetes.io/name: {{ include "k8sChaos.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
-    helm.sh/chart: {{ include "k8schaos.chart" . }}
+    helm.sh/chart: {{ include "k8sChaos.chart" . }}
   annotations:
     "helm.sh/hook": crd-install
     "helm.sh/hook-delete-policy": "before-hook-creation"

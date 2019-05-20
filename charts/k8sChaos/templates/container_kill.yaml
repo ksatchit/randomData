@@ -17,19 +17,19 @@ kind: ChaosExperiment
 metadata:
 
   ## Eventually launched chaos litmusbook/job will bear <name>-<hash>
-  name: pod-delete
+  name: container-kill
   labels:
-    litmuschaos.io/name: {{ include "k8schaos.name" . }}
+    litmuschaos.io/name: {{ include "k8sChaos.name" . }}
     litmuschaos.io/instance: {{ .Release.Name }}
-    helm.sh/chart: {{ include "k8schaos.chart" . }}
+    helm.sh/chart: {{ include "k8sChaos.chart" . }}
 
 description:
   message: |
-    Deletes a pod belonging to a deployment/statefulset/daemonset
+    Kills a container belonging to an application pod 
 
 spec:
 {{- with .Values.configuration }}
-{{- with .podDelete }}
+{{- with .containerKill }} 
   
   ## A low-level definition of chaos parameters which is fed to the executor
   ## for running the experiment.
@@ -43,21 +43,21 @@ spec:
   definition: 
 
     labels:
-      name: pod-delete
+      name: container-kill
+
+    litmusbook: "/experiments/chaos/kubernetes/container_kill/run_litmus_test.yml"
 
     image: {{ .executorImage }}
-
-    litmusbook: "/experiments/chaos/kubernetes/pod_delete/run_litmus_test.yml"
 
     env:
       - name: ANSIBLE_STDOUT_CALLBACK
         value: {{ .ansibleStdoutCallback }}
 
-      - name: TOTAL_CHAOS_DURATION
-        value: {{ .totalChaosDuration }}
+      - name: TARGET_CONTAINER
+        value: {{ .targetContainer }}
 
-      - name: CHAOS_INTERVAL
-        value: {{ .chaosInterval }}
+      - name: KILL_MODE
+        value: {{ .killMode }}
 
       ## The chaos operator can use different execution frameworks to achieve
       ## to achieve a certain chaos operation. It could use Litmus or Chaostoolkit
@@ -67,7 +67,7 @@ spec:
         value: {{ .executorLib }}
 
     command: ["/bin/bash"]
-    args: ["-c", "ansible-playbook ./experiments/chaos/kubernetes/pod_delete/test.yml -i /etc/ansible/hosts -vv; exit 0"]
-
+    args: ["-c", "ansible-playbook ./experiments/chaos/kubernetes/container_kill/test.yml -i /etc/ansible/hosts -vv; exit 0"]
+    
 {{- end }}
-{{- end }}
+{{- end }} 

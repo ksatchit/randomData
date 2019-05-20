@@ -21,7 +21,7 @@ spec:
     {{- end }}
       serviceAccountName: {{ include "chaosOperator.name" . }} 
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "chaosOperator.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: 
