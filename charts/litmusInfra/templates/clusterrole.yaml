@@ -6,6 +6,8 @@ metadata:
   name: {{ include "litmusInfra.fullname" . }}
   labels:
     name: {{ include "litmusInfra.name" . }}
+    instance: {{ .Release.Name  }}
+    chart: {{ include "litmusInfra.chart" . }}
 rules:
 - apiGroups: ["*"]
   resources: ["*"]

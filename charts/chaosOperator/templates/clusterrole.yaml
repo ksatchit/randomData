@@ -5,6 +5,8 @@ metadata:
   name: {{ include "chaosOperator.fullname" . }}
   labels:
     name: {{ include "chaosOperator.name" . }}
+    instance: {{ .Release.Name  }}
+    chart: {{ include "chaosOperator.chart" . }}
 rules:
 - apiGroups: ["*"]
   resources: ["*"]
