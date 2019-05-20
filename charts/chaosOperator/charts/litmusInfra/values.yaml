@@ -1,0 +1,10 @@
+# Default values for litmusInfra.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## TODO: Currently, this value should not be changed until the litmusbooks 
+## are refactored to dynamically pick the namespace in which they are run
+nameOverride: "litmus"
+fullnameOverride: "litmus"
+
+

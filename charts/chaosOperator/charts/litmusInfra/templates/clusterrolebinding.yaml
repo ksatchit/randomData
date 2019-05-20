@@ -1,0 +1,15 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "litmusInfra.fullname" . }}
+  labels:
+    name: {{ include "litmusInfra.name" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "litmusInfra.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "litmusInfra.fullname" . }}
+  namespace: {{ include "litmusInfra.fullname" . }}
