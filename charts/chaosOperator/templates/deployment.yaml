@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: {{ include "chaosOperator.fullname" . }}
   labels:
-{{ include "chaosOperator.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -20,11 +19,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.serviceAccountName }}
-      serviceAccountName: 
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.serviceAccountName }}
+      serviceAccountName: {{ include "chaosOperator.name" . }} 
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
