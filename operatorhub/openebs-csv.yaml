@@ -10,7 +10,7 @@ metadata:
     createdAt: 2019-06-13T10:28:08Z
     repository: https://github.com/openebs/openebs
     certified: "false"
-    support:     support: https://slack.openebs.io/
+    support: https://slack.openebs.io/
     alm-examples: |
       [
         {
