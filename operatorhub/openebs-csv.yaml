@@ -1,0 +1,114 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  name: openebs-operator.v1.0.0
+  namespace: placeholder
+  annotations:
+    capabilities: Install
+    categories: "Storage"
+    containerImage: index.docker.io/openebs/helm-operator:ci
+    createdAt: 2019-06-13T10:28:08Z
+    repository: https://github.com/openebs/openebs
+    certified: "false"
+    support:     support: https://slack.openebs.io/
+    alm-examples: |
+      [
+        {
+          "apiVersion":"openebs.io/v1alpha1",
+          "kind":"OpenEBSInstallTemplate",
+          "metadata": {
+            "name":"oebs",
+            "namespace":"openebs"
+          },
+          "spec": {
+            "imagePullPolicy":"Always"
+          }
+        }
+      ]
+    description: Creates and maintains OpenEBS Control Plane deployments
+spec:
+  displayName: OpenEBS
+  description: >
+    **OpenEBS** is a container attached storage solution for kubernetes.
+  keywords:
+    - OpenEBS
+    - ContainerAttachedStorage
+  version: 1.0.0
+  maturity: alpha
+  maintainers:
+    - name: OpenEBS Project
+      email: cncf-openebs-maintainers.lists.cncf.io
+  provider:
+    name: OpenEBS project
+  links:
+    - name: OpenEBS Website
+      url: https://openebs.io
+    - name: Source Code
+      url: https://github.com/openebs/openebs
+  #icon:
+    #- base64data: 
+    #  mediatype: image/png
+  labels:
+    alm-owner-openebs: openebsoperator
+    operated-by: openebsoperator
+  selector:
+    matchLabels:
+      alm-owner-openebs: openebsoperator
+      operated-by: openebsoperator
+  installModes:
+    - type: OwnNamespace
+      supported: true
+    - type: SingleNamespace
+      supported: true
+    - type: MultiNamespace
+      supported: false
+    - type: AllNamespaces
+      supported: true
+  install:
+    strategy: deployment
+    spec:
+      clusterPermissions:
+        - serviceAccountName: openebs-operator
+          rules:
+            - apiGroups:
+              - "*"
+              resources:
+              - "*"
+              verbs:
+              - "*"
+      deployments:
+        - name: openebs-operator
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                name: openebs-operator
+            strategy:
+              type: RollingUpdate
+            template:
+              metadata:
+                labels:
+                  name: openebs-operator
+                name: openebs-operator
+              spec:
+                containers:
+                  env:
+                  - name: WATCH_NAMESPACE
+                    value: ""
+                  - name: POD_NAME
+                    valueFrom:
+                      fieldRef:
+                        fieldPath: metadata.name
+                  - name: OPERATOR_NAME
+                    value: "openebs-operator"
+                  image: index.docker.io/openebs/helm-operator:ci
+                  imagePullPolicy: Always
+                  name: openebs-operator
+                serviceAccountName: openebs-operator
+  customresourcedefinitions:
+    owned:
+      - name: openebsinstalltemplates.openebs.io
+        version: v1alpha1
+        kind: OpenEBSInstallTemplate
+        displayName: OpenEBS Install Template
+        description: Represents a OpenEBS Install Operator
