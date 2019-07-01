@@ -2,7 +2,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
   name: openebsoperator.v1.0.0
-  namespace: placeholder
+  namespace: default 
   annotations:
     capabilities: Basic Install
     categories: "Storage"
@@ -205,6 +205,7 @@ spec:
   maintainers:
     - name: kmova
       email: kiran.mova@openebs.io
+  minKubeVersion: 1.12.0
   provider:
     name: OpenEBS project
   links:
@@ -259,6 +260,9 @@ spec:
                 name: openebs-operator
               spec:
                 containers:
+                - name: openebs-operator
+                  image: index.docker.io/openebs/helm-operator:ci
+                  imagePullPolicy: Always
                   env:
                   - name: WATCH_NAMESPACE
                     value: ""
@@ -268,9 +272,6 @@ spec:
                         fieldPath: metadata.name
                   - name: OPERATOR_NAME
                     value: "openebs-operator"
-                  image: index.docker.io/openebs/helm-operator:ci
-                  imagePullPolicy: Always
-                  name: openebs-operator
                 serviceAccountName: openebs-operator
   customresourcedefinitions:
     owned:
@@ -279,3 +280,84 @@ spec:
         kind: OpenEBSInstallTemplate
         displayName: OpenEBS Install Template
         description: Represents a OpenEBS Install Operator
+        resources:
+          - kind: ServiceAccount
+            name: ''
+            version: v1
+          - kind: ClusterRole
+            name: ''
+            version: rbac.authorization.k8s.io/v1beta1
+          - kind: ClusterRoleBinding
+            name: ''
+            version: rbac.authorization.k8s.io/v1beta1
+          - kind: Deployment
+            name: ''
+            version: apps/v1beta1
+          - kind: Service
+            name: ''
+            version: v1
+          - kind: ConfigMap
+            name: ''
+            version: v1
+          - kind: DaemonSet
+            name: ''
+            version: extensions/v1beta1
+          - kind: Secret
+            name: ''
+            version: v1
+          - kind: ValidatingWebhookConfiguration
+            name: ''
+            version: admissionregistration.k8s.io/v1beta1
+        specDescriptors:
+          - description: Image pull policy
+            displayName: Image
+            path: image
+          - description: RBAC creation policy
+            displayName: RBAC
+            path: rbac
+          - description: ServiceAccount creation policy 
+            displayName: ServiceAccount 
+            path: serviceAccount
+          - description: OpenEBS release version 
+            displayName: Release
+            path: release
+          - description: Maya ApiServer Attributes
+            displayName: MayaAPIServer
+            path: apiserver
+          - description: OpenEBS Provisioner Attributes
+            displayName: Provisioner
+            path: provisioner
+          - description: LocalPV Provisioner Attributes
+            displayName: LocalProvisioner
+            path: localprovisioner
+          - description: OpenEBS Snapshot Operator Attributes
+            displayName: SnapshotOperator
+            path: snapshotOperator
+          - description: Node Device Manager Attributes
+            displayName:  NodeDeviceManager
+            path: ndm
+          - description: NDM Operator Attributes
+            displayName: NDMOperator
+            path: ndmOperator
+          - description: Validating AdmissionServer Webhook Attributes
+            displayName: WebHook
+            path: webhook
+          - description: Jiva Data Engine Attributes
+            displayName: Jiva
+            path: jiva
+          - description: cStor Data Engine Attributes
+            displayName: cStor
+            path: cstor
+          - description: Monitoring Policies 
+            displayName: Policies 
+            path: policies
+          - description: Google Analytics Attributes
+            displayName: Analytics
+            path: analytics
+        statusDescriptors: 
+          - description: ClusterServiceVersion Condition
+            displayName: Conditions
+            path: conditions
+            x-descriptors:
+              - 'urn:alm:descriptor:io.kubernetes.conditions'
+
