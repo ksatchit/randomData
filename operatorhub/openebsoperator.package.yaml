@@ -1,4 +1,4 @@
 packageName: openebs
 channels:
   - name: alpha
-    currentCSV: openebs-operator.v1.0.0 
+    currentCSV: openebsoperator.v1.0.0 

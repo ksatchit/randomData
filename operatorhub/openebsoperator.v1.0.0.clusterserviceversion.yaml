@@ -1,10 +1,10 @@
 apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
-  name: openebs-operator.v1.0.0
+  name: openebsoperator.v1.0.0
   namespace: placeholder
   annotations:
-    capabilities: Install
+    capabilities: Basic Install
     categories: "Storage"
     containerImage: index.docker.io/openebs/helm-operator:ci
     createdAt: 2019-06-13T10:28:08Z
@@ -14,14 +14,149 @@ metadata:
     alm-examples: |
       [
         {
-          "apiVersion":"openebs.io/v1alpha1",
-          "kind":"OpenEBSInstallTemplate",
+          "apiVersion": "openebs.io/v1alpha1",
+          "kind": "OpenEBSInstallTemplate",
           "metadata": {
-            "name":"oebs",
-            "namespace":"openebs"
+            "name": "oebs",
+            "namespace": "openebs"
           },
           "spec": {
-            "imagePullPolicy":"Always"
+            "rbac": {
+              "create": "true"
+            },
+            "serviceAccount": {
+              "create": "true"
+            },
+            "release": {
+              "version": "1.0.0"
+            },
+            "image": {
+              "pullPolicy": "IfNotPresent"
+            },
+            "apiserver": {
+              "image": "quay.io/openebs/m-apiserver",
+              "imageTag": "1.0.0",
+              "replicas": "1",
+              "ports": {
+                 "externalPort": "5656",
+                 "internalPort": "5656"
+              },
+              "sparse": {
+                "enabled": "false"
+              },
+              "healthCheck": {
+                 "initialDelaySeconds": "50",
+                 "periodSeconds": "60"
+              }
+            },
+            "provisioner": {
+              "image": "quay.io/openebs/openebs-k8s-provisioner",
+              "imageTag": "1.0.0",
+              "replicas": "1",
+              "healthCheck": {
+                "initialDelaySeconds": "30",
+                "periodSeconds": "60"
+              }
+            },
+            "localprovisioner": {
+              "image": "quay.io/openebs/provisioner-localpv",
+              "imageTag": "1.0.0",
+              "helperImage": "quay.io/openebs/openebs-tools",
+              "helperImageTag": "3.8",
+              "replicas": "1",
+              "basePath": "/var/openebs/local",
+              "healthCheck": {
+                "initialDelaySeconds": "30",
+                "periodSeconds": "60"
+              }
+            },
+            "snapshotOperator": {
+               "controller": {
+                 "image": "quay.io/openebs/snapshot-controller",
+                 "imageTag": "1.0.0"
+               },
+               "provisioner": {
+                 "image": "quay.io/openebs/snapshot-provisioner",
+                 "imageTag": "1.0.0"
+               },
+               "replicas": "1",
+               "upgradeStrategy": "Recreate",
+               "healthCheck": {
+                 "initialDelaySeconds": "30",
+                 "periodSeconds": "60"
+               }
+            },
+            "ndm": {
+              "image": "quay.io/openebs/node-disk-manager-amd64",
+              "imageTag": "v0.4.0",
+              "sparse": {
+                "path": "/var/openebs/sparse",
+                "size": "10737418240",
+                "count": "1"
+              },
+              "filters": {
+                "excludeVendors": "CLOUDBYT,OpenEBS",
+                "includePaths": "",
+                "excludePaths": "loop,fd0,sr0,/dev/ram,/dev/dm-,/dev/md"
+              },
+              "healthCheck": {
+                "initialDelaySeconds": "30",
+                "periodSeconds": "60"
+              }
+            },
+            "ndmOperator": {
+              "image": "quay.io/openebs/node-disk-operator-amd64",
+              "imageTag": "v0.4.0", 
+              "replicas": "1", 
+              "upgradeStrategy": "Recreate",
+              "readinessCheck": {
+                "initialDelaySeconds": "4",
+                "periodSeconds": "10",
+                "failureThreshold": "1"
+              },
+              "cleanupImage": "quay.io/openebs/linux-utils",
+              "cleanupImageTag": "3.9"
+            },
+            "webhook": {
+              "image": "quay.io/openebs/admission-server",
+              "imageTag": "1.0.0",
+              "generateTLS": "true",
+              "replicas": "1"
+            },
+            "jiva": {
+              "image": "quay.io/openebs/jiva",
+              "imageTag": "1.0.0",
+              "replicas": "3"
+            },
+            "cstor": {
+              "pool": {
+                "image": "quay.io/openebs/cstor-pool",
+                "imageTag": "1.0.0"
+              },
+              "poolMgmt": {
+                "image": "quay.io/openebs/cstor-pool-mgmt",
+                "imageTag": "1.0.0"
+              },
+              "target": {
+                "image": "quay.io/openebs/cstor-istgt",
+                "imageTag": "1.0.0"
+              },
+              "volumeMgmt": {
+                "image": "quay.io/openebs/cstor-volume-mgmt",
+                "imageTag": "1.0.0"
+              }
+            },
+            "policies": {
+              "monitoring": {
+                "enabled": "true",
+                "image": "quay.io/openebs/m-exporter",
+                "imageTag": "1.0.0"
+              }
+            },
+            "analytics": {
+              "enabled": "true",
+              "pingInterval": "24h"
+            }
           }
         }
       ]
@@ -29,15 +164,47 @@ metadata:
 spec:
   displayName: OpenEBS
   description: >
-    **OpenEBS** is a container attached storage solution for kubernetes.
+    **OpenEBS** is a container attached storage solution that enables the use 
+    of containers for mission-critical, persistent workloads and for other stateful 
+    workloads such as logging or Prometheus for example.
+
+    OpenEBS itself is deployed as just another container on your host and enables 
+    storage services that can be designated on a per pod, application, cluster 
+    or container level, including:-
+
+    * Data persistence across nodes
+    * Synchronization of data across availability zones and cloud providers
+    * A common layer so whether you are running on the cloud, or your bare metal
+    * Integration with Kubernetes, so developer and application intent flows into OpenEBS
+    * Management of tiering to and from S3 and other targets.
+
+    # Start using OpenEBS
+    
+    * Try the quickstart [guide](https://docs.openebs.io/docs/next/quickstart.html)
+    
+    # Contribute to OpenEBS
+
+    * To learn how to contribute, please read the contribution guide: 
+      [contribution guide](https://github.com/openebs/openebs/blob/master/CONTRIBUTING.md)
+
+    # Community
+
+    * OpenEBS welcomes your feedback and contributions in any form possible.
+      [Join our Community](https://openebs.io/join-our-slack-community)
+
+    # License
+ 
+    OpenEBS is distributed under the 
+    [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+    
   keywords:
     - OpenEBS
     - ContainerAttachedStorage
   version: 1.0.0
   maturity: alpha
   maintainers:
-    - name: OpenEBS Project
-      email: cncf-openebs-maintainers.lists.cncf.io
+    - name: kmova
+      email: kiran.mova@openebs.io
   provider:
     name: OpenEBS project
   links:
