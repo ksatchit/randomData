@@ -231,7 +231,7 @@ spec:
     - type: MultiNamespace
       supported: false
     - type: AllNamespaces
-      supported: false
+      supported: true
   install:
     strategy: deployment
     spec:
