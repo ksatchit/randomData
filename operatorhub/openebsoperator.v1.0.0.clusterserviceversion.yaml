@@ -294,12 +294,15 @@ spec:
               - openebs.io
               resources:
               - openebsinstalltemplates
+              - openebsinstalltemplates/finalizers
               verbs:
+              - create
               - get
               - list
               - watch
               - patch
               - update
+              - delete
       deployments:
         - name: openebs-operator
           spec:
