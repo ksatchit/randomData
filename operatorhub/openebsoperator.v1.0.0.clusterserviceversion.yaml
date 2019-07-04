@@ -295,6 +295,7 @@ spec:
               resources:
               - openebsinstalltemplates
               - openebsinstalltemplates/finalizers
+              - openebsinstalltemplates/status
               verbs:
               - create
               - get
