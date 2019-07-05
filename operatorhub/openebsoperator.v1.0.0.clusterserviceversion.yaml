@@ -25,7 +25,8 @@ metadata:
               "create": "true"
             },
             "serviceAccount": {
-              "create": "true"
+              "create": "true",
+              "name": "openebs-maya-operator"
             },
             "release": {
               "version": "1.0.0"
