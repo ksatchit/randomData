@@ -171,7 +171,7 @@ spec:
 
     OpenEBS itself is deployed as just another container on your host and enables 
     storage services that can be designated on a per pod, application, cluster 
-    or container level, including:-
+    or container level, including: 
 
     * Data persistence across nodes
     * Synchronization of data across availability zones and cloud providers
@@ -179,17 +179,11 @@ spec:
     * Integration with Kubernetes, so developer and application intent flows into OpenEBS
     * Management of tiering to and from S3 and other targets.
 
-    ## Start using OpenEBS
+    ## Getting Started
     
     * Try the quickstart [guide](https://docs.openebs.io/docs/next/quickstart.html)
-    
-    ## Contribute to OpenEBS
-
     * To learn how to contribute, please read the contribution guide: 
       [contribution guide](https://github.com/openebs/openebs/blob/master/CONTRIBUTING.md)
-
-    ## Community
-
     * OpenEBS welcomes your feedback and contributions in any form possible.
       [Join our Community](https://openebs.org/community)
 
