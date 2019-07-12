@@ -174,18 +174,22 @@ spec:
     or container level, including: 
 
     * Data persistence across nodes
+
     * Synchronization of data across availability zones and cloud providers
+
     * A common layer whether you are running on the cloud, or your bare metal
+
     * Integration with Kubernetes, so developer and application intent flows into OpenEBS
+
     * Management of tiering to and from S3 and other targets.
 
     ## Getting Started
     
     * Try the quickstart [guide](https://docs.openebs.io/docs/next/quickstart.html)
-    * To learn how to contribute, please read the contribution guide: 
-      [contribution guide](https://github.com/openebs/openebs/blob/master/CONTRIBUTING.md)
-    * OpenEBS welcomes your feedback and contributions in any form possible.
-      [Join our Community](https://openebs.org/community)
+
+    * To learn how to contribute, please read the [contribution guide](https://github.com/openebs/openebs/blob/master/CONTRIBUTING.md)
+
+    * OpenEBS welcomes your feedback and contributions in any form possible. [Join our Community](https://openebs.org/community)
 
     ## License
  
