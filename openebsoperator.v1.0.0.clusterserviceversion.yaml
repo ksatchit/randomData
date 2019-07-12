@@ -183,6 +183,34 @@ spec:
 
     * Management of tiering to and from S3 and other targets.
 
+    ## OpenEBS Operator
+
+    OpenEBS primarily provides container attached block storage (iSCSI volumes) by leveraging/aggregating the 
+    storage on the nodes, with the storage controller itself running as a container. Different storage engines 
+    (Jiva & cStor) are supported, with tools available to dynamically provision Kubernetes Local PVs. 
+    The volumes are dynamically provisioned via PersistentVolumeClaims and are managed by a control plane component 
+    called "maya", which also runs as a deployment in the K8s cluster. In addition to maya, a typical OpenEBS 
+    installation comprises several other resources, which aid with various functionalities, ranging from snapshotting 
+    to disk management. All these components are described briefly below: 
+
+    * **Maya-API-Server** - A storage orchestrator which integrates into Kubernetes workflow to help provision 
+      and manage OpenEBS Jiva & cStor (storage engine) volumes
+
+    * **Dynamic-OpenEBS-Provisioner** - A Kubernetes external storage provisioner that utilizes APIs exposed by maya-apiserver 
+      to perform provision & delete operations of Jiva & cStor volumes
+
+    * **Dynamic-LocalPV-Provisioner** - A dynamic provisioner for Kubernetes Local PVs
+
+    * **OpenEBS-Snapshot-Operator** - A Kubernetes snapshot controller that creates & restores OpenEBS volume snapshots
+
+    * **Node-Disk-Manager** - A disk management controller which identifies available disks, maintains inventory, and 
+      dynamically attaches/detaches disks to backend storage pods 
+    
+    The helm-based OpenEBS Operator eases the setup of all the above mentioned components, with a simple custom resource 
+    provided to define the install options, thereby enabling applications to start using the OpenEBS storageclasses in 
+    their PVCs. The OpenEBSInstallTemplate CR can be used to specify start-up parameters & also update/overwrite the 
+    definitions post install. 
+
     ## Getting Started
     
     * Try the quickstart [guide](https://docs.openebs.io/docs/next/quickstart.html)
