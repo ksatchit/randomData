@@ -216,18 +216,20 @@ spec:
     Before installing OpenEBS control plane, perform the following steps to ensure successful deployment of the Node-Disk-Manager
     & the OpenEBS volume replicas (when they are created) respectively. 
 
-    * Configure the OpenEBS service account on the namespace/project selected to use the privileged security context constraint
+    * Configure the OpenEBS service account on the namespace/project selected to use the privileged security context constraint.
 
-    ```
-    oc adm policy add-scc-to-user privileged system:serviceaccount:<project>:<serviceaccountname> 
-    ```
+
+      ```
+      oc adm policy add-scc-to-user privileged system:serviceaccount:<project>:<serviceaccountname> 
+      ```
 
     * Configure the default service account on the namespace/project in which the volume replicas are deployed to use privileged 
       security context constraint. 
 
-    ```
-    oc adm policy add-scc-to-user privileged system:serviceaccount:<project>:default 
-    ```
+
+      ```
+      oc adm policy add-scc-to-user privileged system:serviceaccount:<project>:default 
+      ```
 
     ## Getting Started
     
