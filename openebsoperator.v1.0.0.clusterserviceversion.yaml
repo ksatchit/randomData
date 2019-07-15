@@ -214,9 +214,11 @@ spec:
     ## Pre-Requisites
 
     Before installing OpenEBS control plane, perform the following steps to ensure successful deployment of the Node-Disk-Manager
-    & the OpenEBS volume replicas (when they are created) respectively. 
+    & the OpenEBS volume replicas, respectively. 
 
     * Configure the OpenEBS service account on the namespace/project selected to use the privileged security context constraint.
+
+      **Note**: The serviceaccount name is same as the one specified in the `spec.serviceAccount.name` field of the OpenEBSInstallTemplate CR.
 
 
       ```
