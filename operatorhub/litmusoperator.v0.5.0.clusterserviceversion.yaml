@@ -12,9 +12,9 @@ metadata:
     certified: "false"
     support: https://slack.openebs.io/
     alm-examples: |
-    description: Chaos Engineering for Kubernetes 
+    description: Chaos Engineering for Kubernetes
 spec:
-  displayName: Litmus
+  displayName: Litmus Chaos Operator
   description: >
     **Litmus** is a chaos engineering framework for Kubernetes
 
