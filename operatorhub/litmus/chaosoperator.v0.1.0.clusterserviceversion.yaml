@@ -1,12 +1,12 @@
 apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
-  name: chaosoperator.v0.5.0
+  name: chaosoperator.v0.1.0
   namespace: default 
   annotations:
     capabilities: Basic Install
     categories: "Developer Tools"
-    containerImage: index.docker.io/litmuschaos/chaos-operator:ci
+    containerImage: index.docker.io/litmuschaos/chaos-operator-ce:v0.1.0
     createdAt: 2019-07-15T10:28:08Z
     repository: https://github.com/litmuschaos/chaos-operator
     certified: "false"
