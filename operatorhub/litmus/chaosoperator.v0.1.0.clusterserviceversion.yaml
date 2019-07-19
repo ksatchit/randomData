@@ -43,13 +43,11 @@ spec:
   displayName: Litmus Chaos Operator
   description: >
     **Litmus** is a chaos engineering framework for Kubernetes which helps ensure
-    a consistent and reliable behavior of workloads. Litmus strives to detect the real-world 
+    a consistent and reliable behavior of workloads. It strives to detect the real-world 
     issues which escape during unit and integration tests by injecting faults on the
-    cluster components. With Litmus, the chaos experiment logic is packaged into dedicated 
-    containers which makes them portable across Kubernetes platforms. This containerization 
-    also helps to integrate Litmus into CI/CD environments.
-
-    ## Chaos Operator
+    application & cluster components. With Litmus, the chaos experiment logic is packaged 
+    into dedicated containers which makes them portable across Kubernetes platforms. 
+    This containerization also helps to integrate Litmus into CI/CD environments.
 
     The Litmus chaos operator is used by application developers and SREs to inject chaos 
     into the applications in a managed fashion. It automates the execution of chaos experiments
