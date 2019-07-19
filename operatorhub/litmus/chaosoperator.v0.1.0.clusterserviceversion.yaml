@@ -5,42 +5,95 @@ metadata:
   namespace: default 
   annotations:
     capabilities: Basic Install
-    categories: "Developer Tools"
+    categories: "Integration & Delivery"
     containerImage: index.docker.io/litmuschaos/chaos-operator-ce:v0.1.0
     createdAt: 2019-07-15T10:28:08Z
     repository: https://github.com/litmuschaos/chaos-operator
     certified: "false"
     support: https://slack.openebs.io/
     alm-examples: |
+      [
+        {
+          "apiVersion": "litmuschaos.io/v1alpha1",
+          "kind": "ChaosEngine",
+          "metadata": {
+            "name": "sample-chaos",
+            "namespace": "default"
+          },
+          "spec": {
+            "appinfo": {
+              "appns": "default",
+              "applabel": "app=testapp",
+              "appkind": "deployment"
+            },
+            "chaosServiceAccount": "default",
+            "experiments": [
+              {
+                "name": "pod-delete",
+                "spec": {
+                  "components": null
+                }
+              }
+            ]
+          }
+        }
+      ]
     description: Chaos Engineering for Kubernetes
 spec:
   displayName: Litmus Chaos Operator
   description: >
-    **Litmus** is a chaos engineering framework for Kubernetes
+    **Litmus** is a chaos engineering framework for Kubernetes which helps ensure
+    a consistent and reliable behavior of workloads. Litmus strives to detect the real-world 
+    issues which escape during unit and integration tests by injecting faults on the
+    cluster components. With Litmus, the chaos experiment logic is packaged into dedicated 
+    containers which makes them portable across Kubernetes platforms. This containerization 
+    also helps to integrate Litmus into CI/CD environments.
 
-    # Start using Litmus
+    ## Chaos Operator
+
+    The Litmus chaos operator is used by application developers and SREs to inject chaos 
+    into the applications in a managed fashion. It automates the execution of chaos experiments
+    based on a custom resource definition `(ChaosEngine)` which specifies the list of experiments 
+    to be performed and also contains details of the application target. The chaos experiments 
+    are themselves custom resource definitions `(chaosExperiment)` , holding specifics such as 
+    chaos parameters, log levels etc., and are referenced by an `executor` pod, which is launched
+    and managed by the operator. The status & eventually, results of the experiments are exposed 
+    as prometheus metrics, in order to aid monitoring & integration with visualization platforms.
+
+    ## Pre-Requisites
+
+    Before creating the chaosEngine CR, perform the following steps to ensure successful chaos 
+    injection.
+
+    * Create the chaos experiment CRs for the faults you would like to inject against an application. 
+      These are bundled together into helm charts based on the category & can be obtained [here](https://litmuschaos.github.io/chaos-charts/index.yaml)
+
+
+    * Ensure that the application under test (AUT) is annotated in the following manner.
+
+      ```
+      kubectl annotate deployment/<app-deployment> litmuschaos.io/chaos="true" -n <app-namespace>
+      ```
+
+    ## Learn More About Litmus 
     
     * Refer the [docs](https://docs.litmuschaos.io)
-    
-    # Contribute to Litmus
 
     * To learn how to contribute, please read the contribution guide: 
       [contribution guide](https://github.com/litmuschaos/litmus/blob/master/CONTRIBUTING.md)
 
-    # Community
-
     * Litmus welcomes your feedback and contributions in any form possible.
-      [Join our Community](https://openebs.io/join-our-slack-community)
+      [Join our Community](https://slack.openebs.io/)
     
   keywords:
     - Litmus
     - ChaosEngineering
-  version: 0.5.0
+  version: 0.1.0
   maturity: alpha
   maintainers:
     - name: ksatchit
       email: karthik.s@mayadata.io
-  minKubeVersion: 1.12.0
+  minKubeVersion: 1.11.0
   provider:
     name: MayaData
   links:
@@ -114,23 +167,17 @@ spec:
               - patch
               - delete 
             - apiGroups:
-              - admissionregistration.k8s.io
+              - litmuschaos.io
               resources:
-              - validatingwebhookconfigurations
-              verbs:
-              - create
-              - get
-              - list
-              - watch
-              - update
-              - patch
-              - delete 
-            - apiGroups:
-              - openebs.io
-              resources:
-              - openebsinstalltemplates
-              - openebsinstalltemplates/finalizers
-              - openebsinstalltemplates/status
+              - chaosengines
+              - chaosengines/finalizers
+              - chaosengines/status
+              - chaosexperiments
+              - chaosexperiments/finalizers
+              - chaosexperiments/status
+              - chaosresults
+              - chaosresults/finalizers
+              - chaosresults/status
               verbs:
               - create
               - get
@@ -156,7 +203,7 @@ spec:
               spec:
                 containers:
                 - name: chaos-operator
-                  image: index.docker.io/litmuschaos/helm-operator:ci
+                  image: index.docker.io/litmuschaos/chaos-operator-ce:v0.1.0
                   imagePullPolicy: Always
                   env:
                   - name: WATCH_NAMESPACE
@@ -167,6 +214,8 @@ spec:
                         fieldPath: metadata.name
                   - name: OPERATOR_NAME
                     value: "chaos-operator"
+                  - name: SEC_RES_SA
+                    value: "chaos-operator"
                 serviceAccountName: chaos-operator
   customresourcedefinitions:
     owned:
@@ -176,33 +225,26 @@ spec:
         displayName: ChaosEngine
         description: Represents the Chaos Schedule for an application
         resources:
-          - kind: ServiceAccount
-            name: ''
-            version: v1
-          - kind: ClusterRole
-            name: ''
-            version: rbac.authorization.k8s.io/v1beta1
-          - kind: ClusterRoleBinding
-            name: ''
-            version: rbac.authorization.k8s.io/v1beta1
-          - kind: Deployment
-            name: ''
-            version: apps/v1beta1
           - kind: Service
             name: ''
             version: v1
-          - kind: ConfigMap
+          - kind: Pod
             name: ''
             version: v1
-          - kind: DaemonSet
-            name: ''
-            version: extensions/v1beta1
-          - kind: Secret
-            name: ''
-            version: v1
-          - kind: ValidatingWebhookConfiguration
-            name: ''
-            version: admissionregistration.k8s.io/v1beta1
+          - kind: 
         specDescriptors:
-        statusDescriptors: 
-
+          - description: Application Information
+            displayName: AppInfo
+            path: appinfo
+          - description: Service Account for Chaos
+            displayName: ChaosServiceAccount
+            path: chaosServiceAccount
+          - description: Chaos Experiment List
+            displayName: Experiments
+            path: experiments
+        statusDescriptors:
+          - description: ChaosEngine Conditions 
+            displayName: Conditions
+            path: conditions
+            x-descriptors:
+              - 'urn:alm:descriptor:io.kubernetes.conditions'
