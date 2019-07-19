@@ -49,6 +49,8 @@ spec:
     into dedicated containers which makes them portable across Kubernetes platforms. 
     This containerization also helps to integrate Litmus into CI/CD environments.
 
+    ## How It Works 
+
     The Litmus chaos operator is used by application developers and SREs to inject chaos 
     into the applications in a managed fashion. It automates the execution of chaos experiments
     based on a custom resource definition `(ChaosEngine)` which specifies the list of experiments 
