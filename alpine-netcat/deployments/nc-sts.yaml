@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: nc-pod
+  labels:
+    name: nc-pod
+spec:
+  replicas: 1
+  serviceName: "nc-pod-svc"
+  template:
+    metadata:
+      labels:
+        name: nc-pod
+    spec:
+      containers:
+        - name: nc-pod
+          #image: ksatchit/nc:latest
+          #image: ksatchit/nc:server
+          image: ksatchit/nc:ncat
+          env:
+            - name: NC_CMD_ARGS
+              #value: "-lk -n -u -v -w 0 -p 26500"
+              value: "-l -k -n -p 26500"
+            - name: LOAD_PATH
+              value: "/mnt"
+          ports:
+          - containerPort: 26500
+            name: nc-tcp-listener
+          volumeMounts:
+            - mountPath: /mnt
+              name: nc-stor 
+  volumeClaimTemplates:
+    - metadata:
+        name: nc-stor
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nc-pod-svc
+  labels:
+    name: nc-pod
+spec:
+  #type: ClusterIP
+  clusterIP: None
+  selector:
+    name: nc-pod
+  ports:
+  - name: nc-tcp-listener
+    port: 26500
