@@ -1,0 +1,9 @@
+[test1]
+hostname=nc-pod-0.nc-pod-svc
+port=26501
+protocol=tcp
+rw=write
+rate=750k
+size=100M
+bs=4k
+ioengine=net

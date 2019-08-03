@@ -1,0 +1,7 @@
+[test1]
+port=26501
+rw=read
+size=100M
+ioengine=net
+protocol=tcp
+listen
