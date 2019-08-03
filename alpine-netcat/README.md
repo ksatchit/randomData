@@ -6,11 +6,11 @@ app to simulate real-world workloads.
 ### App Requirements 
 
 - Quickly installed, small image sizes
-- Have minimal footprint in terms of resource consumption
+- Have minimal footprint in terms of resource consumption. Scales highly on limited on-premise HW
 - Extensible, i.e., reasonable package management & library support available
 
 
-- *Solution: alpine*
+  *Solution: alpine*
 
 ### Workflow Requirements
 
@@ -30,7 +30,13 @@ app to simulate real-world workloads.
 ### Artifacts
 
 - **nc-sts.yaml**: Single replica sts which runs an entrypoint script to setup ncat server listening on a port for TCP traffic & `tee` data
-  into a file on the storage mount point
+  from port (appears on stdout) into a file on the storage mount point
+
+  Notes: 
+    - openbsd based nc that comes as default in alpine crashes upon disconnected clients (tcp)/or picks only first few packets (udp) 
+    - ncat from nmap-ncat package is more stable. 
+    - Making this app as a deployment is seen to cause the cluster IP service resolution to fail from client (pod IP works). Hence
+      used sts in order to directly access pod (stable) name. 
 
 - **clinet-app.cmd**: Example of a sample external loadgen pod. It can be used for a external liveness check by using a wrapper script to do 
   a ping check

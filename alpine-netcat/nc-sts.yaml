@@ -15,12 +15,9 @@ spec:
     spec:
       containers:
         - name: nc-pod
-          #image: ksatchit/nc:latest
-          #image: ksatchit/nc:server
           image: ksatchit/nc:ncat
           env:
             - name: NC_CMD_ARGS
-              #value: "-lk -n -u -v -w 0 -p 26500"
               value: "-l -k -n -p 26500"
             - name: LOAD_PATH
               value: "/mnt"
@@ -46,7 +43,6 @@ metadata:
   labels:
     name: nc-pod
 spec:
-  #type: ClusterIP
   clusterIP: None
   selector:
     name: nc-pod
