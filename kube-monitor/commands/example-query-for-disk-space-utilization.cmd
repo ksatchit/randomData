@@ -1,0 +1,1 @@
+100.0 - 100 * (node_filesystem_avail_bytes{instance=~'$node',device !~'tmpfs',device!~'by-uuid'} / node_filesystem_size_bytes{instance=~'$node',device !~'tmpfs',device!~'by-uuid'}) or 100.0 - 100 * (node_filesystem_avail{instance=~'$node',device !~'tmpfs',device!~'by-uuid'} / node_filesystem_size{instance=~'$node',device !~'tmpfs',device!~'by-uuid'})
