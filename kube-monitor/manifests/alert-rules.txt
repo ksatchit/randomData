@@ -1,0 +1,423 @@
+# if remaining space is less than 10 percent of total size, generate alert
+ALERT VolumeCapacityLow
+  IF          (openebs_size_of_volume - openebs_actual_used) < (10 * openebs_size_of_volume) / 100
+  LABELS      { severity="warning" }
+  ANNOTATIONS {
+    SUMMARY = "Your volume '{{$labels.openebs_pv}}' created for '{{$labels.openebs_pvc}}' has {{ $value }}GB) space remaining.",
+    DESCRIPTION = "I have observed that your OpenEBS volume '{{$labels.openebs_pv}}' created for '{{$labels.openebs_pvc}}' capacity is low because you have already consumed 90% of total capacity",
+    OPENEBSVOL = "{{ $labels.openebs_pv }}",
+    OPENEBSVOLCLAIM = "{{ $labels.openebs_pvc }}"
+  }
+
+# if uptime of the volume is same as that of the volume in currenttime - 2 min (means, it has not been updated for the past 2 min)
+# or uptime metric existed before 2 min and now, it is missing for this volume
+ALERT VolumeDown
+  IF          ((openebs_volume_uptime offset 2m) unless (openebs_volume_uptime))
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' is unreachable since last 2 minutes.",
+    DESCRIPTION = "I have observed that your volume '{{$labels.openebs_pv}}' created for '{{$labels.openebs_pvc}}' is unreachable since last 2 minutes and it needs to be brought up",
+    OPENEBSVOL = "{{ $labels.openebs_pv }}",
+    OPENEBSVOLCLAIM = "{{ $labels.openebs_pvc }}"
+  }
+
+# if uptime metric exists now and is greater than it was before 2 min.
+# this we take into account unless it previously it was wrong
+# if earlier, the metric existed and has been getting updated, we won't trigger this alert.
+ALERT VolumeUp
+  IF          ((openebs_volume_uptime) and (openebs_volume_uptime > openebs_volume_uptime offset 2m)) unless ((openebs_volume_uptime offset 4m) and (openebs_volume_uptime offset 2m > openebs_volume_uptime offset 4m))
+  LABELS      { severity="info" }
+  ANNOTATIONS {
+    SUMMARY = "Your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' is now up and running.",
+    DESCRIPTION = "Your OpenEBS volume '{{$labels.openebs_pv}}' is now up and running",
+    OPENEBSVOL = "{{ $labels.openebs_pv }}",
+    OPENEBSVOLCLAIM = "{{ $labels.openebs_pvc }}"
+  }
+
+# if 'up' exists before 1 min and now it does not exist
+# NOTE: Dynamically fill in the Cluster-Name in job label
+#ALERT ClusterDown
+#  IF          (up{job="openebs-prometheus-server"} offset 1m) unless (up{job="openebs-prometheus-server"})
+#  LABELS      { severity="error" }
+#  ANNOTATIONS {
+#    SUMMARY = "Your cluster '{{$labels.slave}} {{ $labels.instance }}' is unreachable since last one minute.",
+#    DESCRIPTION = "I have observed that your cluster '{{ $labels.slave }} {{ $labels.instance }}' is unreachable since last one minute and it needs to be brought up.",
+#    CLUSTERNAME = "{{ $labels.slave }}",
+#  }
+
+# if 'up' exists now and is greater than 0
+# this we evaluate only if
+# not
+# 1. up offset 2m was > 0 (don't raise alert if before 2 min, the cluster was up and we would have sent the alert already)
+# or
+# 2. up did exist before 10m ( don't raise alert if before 10 min , cluster was there)
+#ALERT ClusterUp
+#  IF          ((up{job="openebs-prometheus-server"}) and (up{job="openebs-prometheus-server"} > 0)) unless ((up{job="openebs-prometheus-server"} offset 2m > 0) or (up{job="openebs-prometheus-server"} offset 10m))
+#  LABELS      { severity="info" }
+#  ANNOTATIONS {
+#    SUMMARY = "Your cluster '{{$labels.slave}} {{$labels.instance}}' is now up and running.No Outage recorded.",
+#    DESCRIPTION = "Great ! Your cluster '{{$labels.slave}} {{$labels.instance}}' is now up and running smoothly.Go ahead and use it. No Outage recorded.",
+#    CLUSTERNAME = "{{ $labels.slave }}",
+#  }
+
+# NOTE: The length of the summary might not fit in the UI
+# ALERT VolumeWriteLatencyHigh
+#   IF          (increase(openebs_write_time[5m])) and (increase(openebs_writes[5m])) and (((increase(openebs_write_time[5m]))/(increase(openebs_writes[5m])))/1000000) > 100
+#   LABELS      { severity="warning" }
+#   ANNOTATIONS {
+#     SUMMARY = "Experiencing write performance degradation. Write latency of the OpenEBS volume '{{$labels.openebs_pv}}' created from the claim '{{$labels.openebs_pvc}} is more than 100ms for the past 5 min.",
+#     DESCRIPTION = "I have observed that your OpenEBS volume '{{$labels.openebs_pv}}' created from the claim '{{$labels.openebs_pvc}}' is consistently experiencing write-latency spike for last 5 minutes and it has reached to {{ $value }}",
+#     OPENEBSVOL = "{{ $labels.openebs_pv }}",
+#   }
+
+# ALERT VolumeReadLatencyHigh
+#   IF          (increase(openebs_read_time[5m])) and (increase(openebs_reads[5m])) and (((increase(openebs_read_time[5m]))/(increase(openebs_reads[5m])))/1000000) > 100
+#   LABELS      { severity="warning" }
+#   ANNOTATIONS {
+#     SUMMARY = "Experiencing read performance degradation. Read latency of the volume '{{$labels.openebs_pv}}' is more than 100ms for the past 5 min.",
+#     DESCRIPTION = "I have observed that your volume '{{$labels.openebs_pv}}' is consistently experiencing read-latency spike for last 5 minutes and it has reached to {{ $value }}",
+#     OPENEBSVOL = "{{ $labels.openebs_pv }}",
+#   }
+
+#ALERT NodeCPUUsage
+#  IF (100 - (avg by (instance) (irate(node_cpu{name="node-exporter",mode="idle"}[5m])) * 100)) > 75
+#  FOR 5m
+#  LABELS { severity="warning" }
+#  ANNOTATIONS {
+#    SUMMARY = "{{$labels.instance}}: High CPU usage detected",
+#    DESCRIPTION = "{{$labels.instance}}: CPU usage is above 75% (current value is: {{ $value }})"
+#  }
+#
+#ALERT NodeLowRootDisk
+#  IF ((node_filesystem_size{mountpoint="/root-disk"} - node_filesystem_free{mountpoint="/root-disk"} ) / node_filesystem_size{mountpoint="/root-disk"} * 100) > 75
+#  FOR 2m
+#  LABELS { severity="warning" }
+#  ANNOTATIONS {
+#    SUMMARY = "{{$labels.instance}}: Low root disk space",
+#    DESCRIPTION = "{{$labels.instance}}: Root disk usage is above 75% (current value is: {{ $value }})"
+#  }
+#
+#ALERT NodeLowDataDisk
+#  IF ((node_filesystem_size{mountpoint="/data-disk"} - node_filesystem_free{mountpoint="/data-disk"} ) / node_filesystem_size{mountpoint="/data-disk"} * 100) > 75
+#  FOR 2m
+#  LABELS { severity="warning" }
+#  ANNOTATIONS {
+#    SUMMARY = "{{$labels.instance}}: Low data disk space",
+#    DESCRIPTION = "{{$labels.instance}}: Data disk usage is above 75% (current value is: {{ $value }})"
+#  }
+#
+#ALERT NodeLoadAverage
+#  IF ((node_load5 / count without (cpu, mode) (node_cpu{mode="system"})) > 1)
+#  FOR 2m
+#  LABELS { severity="warning" }
+#  ANNOTATIONS {
+#    SUMMARY = "{{$labels.instance}}: High Node Load average(5m) detected",
+#    DESCRIPTION = "{{$labels.instance}}: LA is high"
+#  }
+#
+#ALERT NodeSwapUsage
+#  IF (((node_memory_SwapTotal-node_memory_SwapFree)/node_memory_SwapTotal)*100) > 75
+#  FOR 2m
+#  LABELS { severity="warning" }
+#  ANNOTATIONS {
+#    SUMMARY = "{{$labels.instance}}: High Swap usage detected",
+#    DESCRIPTION = "{{$labels.instance}}: Swap usage usage is above 75% (current value is: {{ $value }})"
+#  }
+#
+#ALERT NodeMemoryUsage
+#  IF (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) > 75
+#  FOR 2m
+#  LABELS { severity="warning" }
+#  ANNOTATIONS {
+#    SUMMARY = "{{$labels.instance}}: High memory usage detected",
+#    DESCRIPTION = "{{$labels.instance}}: Memory usage is above 75% (current value is: {{ $value }})"
+#  }
+
+# if any pod goes to CrashLoopBackOff, generate alert
+ALERT CrashLoopBackOff
+  IF          ((kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"}==1) unless (kube_pod_container_status_waiting_reason offset 1m)) or ((kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"}==1) and (kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} offset 1m != 1))
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Pod '{{$labels.pod}}' in namespace '{{$labels.namespace}}' is in CrashLoopBackOff",
+    DESCRIPTION = "A container named '{{$labels.container}}' in the pod '{{$labels.pod}}' in namespace '{{$labels.namespace}}' in your cluster is in waiting state because it is experiencing CrashLoopBackOff",
+    CONTAINER = "{{ $labels.container }}",
+    POD = "{{$labels.pod}}",
+    NAMESPACE = "{{$labels.namespace}}"
+  }
+
+ # if any pod goes to CreateContainerConfigError, generate alert
+ALERT CreateContainerConfigError
+  IF          ((kube_pod_container_status_waiting_reason{reason="CreateContainerConfigError"}==1) unless (kube_pod_container_status_waiting_reason offset 1m)) or ((kube_pod_container_status_waiting_reason{reason="CreateContainerConfigError"}==1) and (kube_pod_container_status_waiting_reason{reason="CreateContainerConfigError"} offset 1m != 1))
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Pod '{{$labels.pod}}' in namespace '{{$labels.namespace}}' is in CreateContainerConfigError",
+    DESCRIPTION = "A container named '{{$labels.container}}' in the pod '{{$labels.pod}}' in namespace '{{$labels.namespace}}' in your cluster is in waiting state because it is experiencing CreateContainerConfigError",
+    CONTAINER = "{{ $labels.container }}",
+    POD = "{{$labels.pod}}",
+    NAMESPACE = "{{$labels.namespace}}"
+  }
+
+# if any pod goes to ImagePullBackOff, generate alert
+ALERT ImagePullBackOff
+  IF          ((kube_pod_container_status_waiting_reason{reason="ImagePullBackOff"}==1) unless (kube_pod_container_status_waiting_reason offset 1m)) or ((kube_pod_container_status_waiting_reason{reason="ImagePullBackOff"}==1) and (kube_pod_container_status_waiting_reason{reason="ImagePullBackOff"} offset 1m != 1))
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Pod '{{$labels.pod}}' in namespace '{{$labels.namespace}}' is in ImagePullBackOff",
+    DESCRIPTION = "A container named '{{$labels.container}}' in the pod '{{$labels.pod}}' in namespace '{{$labels.namespace}}' in your cluster is in waiting state because it is experiencing ImagePullBackOff",
+    CONTAINER = "{{ $labels.container }}",
+    POD = "{{$labels.pod}}",
+    NAMESPACE = "{{$labels.namespace}}"
+  }
+
+# if any pod starts running after it went to CrashLoopBackOff, CreateContainerConfigError or ImagePullBackOff, generate alert
+ALERT PodRecovered
+  IF          (kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} offset 1m == 1 or kube_pod_container_status_waiting_reason{reason="CreateContainerConfigError"} offset 1m == 1 or kube_pod_container_status_waiting_reason{reason="ImagePullBackOff"} offset 1m == 1) unless (kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} == 1 or kube_pod_container_status_waiting_reason{reason="CreateContainerConfigError"} == 1 or kube_pod_container_status_waiting_reason{reason="ImagePullBackOff"} == 1) and ignoring(reason) kube_pod_container_status_running==1
+  LABELS      { severity="info" }
+  ANNOTATIONS {
+    SUMMARY = "Pod '{{$labels.pod}}' running in namespace '{{$labels.namespace}}' is recovered from '{{$labels.reason}}'",
+    DESCRIPTION = "A container named '{{$labels.container}}' in the pod '{{$labels.pod}}' running in namespace '{{$labels.namespace}}' in your cluster has been recovered. Earlier it was experiencing '{{$labels.reason}}'",
+    CONTAINER = "{{ $labels.container }}",
+    POD = "{{$labels.pod}}",
+    NAMESPACE = "{{$labels.namespace}}"
+  }
+
+# if a volume's state is offline after one minute of Degraded/Healthy/Unknown state
+# (1) Offline state = When jiva/cstor volume replicas don't have the requisite quorum of replicas or mounted volume has gone in readOnly
+ALERT VolumeNotHealthy
+  IF          (openebs_volume_status == 1 and (openebs_volume_status offset 1m != 1))
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' has gone offline",
+    DESCRIPTION = "I have observed that your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' is offline, your application consuming the storage could be crashing",
+    OPENEBSVOL = "{{ $labels.openebs_pv }}",
+    OPENEBSVOLCLAIM = "{{ $labels.openebs_pvc }}"
+  }
+
+# if a volume's state is degraded after one minute of Offline/Healthy/Unknown state
+# (2) Degraded state = When Cstor volume is in rebuilding state, some replicas are not running
+# NOTE: This volume_status is only given when CASType = cstor
+ALERT VolumeDegraded
+  IF          (openebs_volume_status == 2 and (openebs_volume_status offset 1m != 2))
+  LABELS      { severity="warning" }
+  ANNOTATIONS {
+    SUMMARY = "Your volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' is in a degraded state",
+    DESCRIPTION = "I have observed that your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' is degraded, check the replica statuses",
+    OPENEBSVOL = "{{ $labels.openebs_pv }}",
+    OPENEBSVOLCLAIM = "{{ $labels.openebs_pvc }}"
+  }
+
+# if a volume's state is healthy for a minute after of being in an Offline/Degraded/Unknown state
+# (3) Healthy state = Regular state of the volumes
+ALERT VolumeHealthy
+  IF          (openebs_volume_status == 3 and (openebs_volume_status offset 1m != 3))
+  LABELS      { severity="info" }
+  ANNOTATIONS {
+    SUMMARY = "Your volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' is now healthy",
+    DESCRIPTION = "I have observed that your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' is now healthy",
+    OPENEBSVOL = "{{ $labels.openebs_pv }}",
+    OPENEBSVOLCLAIM = "{{ $labels.openebs_pvc }}"
+  }
+
+# if a volume's state is unknown after one minute of being in an Offline/Degraded/Healthy state
+# (4) Unknown state = When Jiva controller or cstor target pod is killed
+ALERT VolumeStatusUnknown
+  IF          (openebs_volume_status == 4 and (openebs_volume_status offset 1m != 4))
+  LABELS      { severity="warning" }
+  ANNOTATIONS {
+    SUMMARY = "Your volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' has gone in an unknown state",
+    DESCRIPTION = "I have observed that your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' is in an unknown state, this happens when the jiva controller or the cstor target pod is not running",
+    OPENEBSVOL = "{{ $labels.openebs_pv }}",
+    OPENEBSVOLCLAIM = "{{ $labels.openebs_pvc }}"
+  }
+
+ALERT HealthyReplicaCount
+  IF          (openebs_healthy_replica_count != openebs_healthy_replica_count offset 1m)
+  LABELS      { severity="info" }
+  ANNOTATIONS {
+    SUMMARY = "Healthy replica count of your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' has changed from {{ with printf \"openebs_healthy_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'} offset 1m\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }} to {{ $value }}. Total replica count is {{ with printf \"openebs_total_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'}\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }}, healthy replica count is {{ $value }} and degraded replica count is {{ with printf \"openebs_degraded_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'}\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }}.",
+    DESCRIPTION = "Detected a change in the healthy replica count of your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}'. It has changed from {{ with printf \"openebs_healthy_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'} offset 1m\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }} to {{ $value }}. Total replica count is {{ with printf \"openebs_total_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'}\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }}, healthy replica count is {{ $value }} and degraded replica count is {{ with printf \"openebs_degraded_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'}\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }}.",
+    OPENEBSVOL = "{{ $labels.openebs_pv }}",
+    OPENEBSVOLCLAIM = "{{ $labels.openebs_pvc }}",
+    TARGETPOD = "{{ $labels.kubernetes_pod_name }}",
+    INSTANCE = "{{ $labels.instance }}"
+  }
+
+ALERT DegradedReplicaCount
+  IF          (openebs_degraded_replica_count != openebs_degraded_replica_count offset 1m)
+  LABELS      { severity="info" }
+  ANNOTATIONS {
+    SUMMARY = "Degraded replica count of your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}' has changed from {{ with printf \"openebs_degraded_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'} offset 1m\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }} to {{ $value }}. Total replica count is {{ with printf \"openebs_total_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'}\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }}, healthy replica count is {{ with printf \"openebs_healthy_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'}\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }} and degraded replica count is {{ $value }}.",
+    DESCRIPTION = "Detected a change in the healthy replica count of your OpenEBS volume '{{$labels.openebs_pv}}' created for the claim '{{$labels.openebs_pvc}}'. It has changed from {{ with printf \"openebs_degraded_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'} offset 1m\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }} to {{ $value }}. Total replica count is {{ with printf \"openebs_total_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'}\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }}, healthy replica count is {{ with printf \"openebs_healthy_replica_count{instance='%s',job='%s',kubernetes_pod_name='%s',openebs_pv='%s',openebs_pvc='%s'}\" $labels.instance $labels.job $labels.kubernetes_pod_name $labels.openebs_pv $labels.openebs_pvc | query }} {{ . | first | value }} {{ end }} and degraded replica count is {{ $value }}.",
+    OPENEBSVOL = "{{ $labels.openebs_pv }}",
+    OPENEBSVOLCLAIM = "{{ $labels.openebs_pvc }}",
+    TARGETPOD = "{{ $labels.kubernetes_pod_name }}",
+    INSTANCE = "{{ $labels.instance }}"
+  }
+
+# if a node in the cluster experience CorruptDockerOverlay then send the alert
+ALERT NodeCorruptDockerOverlay
+  IF          (kube_node_status_condition{condition="CorruptDockerOverlay2",status="false"} == 0 unless kube_node_status_condition{condition="CorruptDockerOverlay2"} offset 1m) or (kube_node_status_condition{condition="CorruptDockerOverlay2",status="false"} == 0 and kube_node_status_condition{condition="CorruptDockerOverlay2",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience DiskPressure then send the alert
+ALERT NodeDiskPressure
+  IF          (kube_node_status_condition{condition="DiskPressure",status="false"} == 0 unless kube_node_status_condition{condition="DiskPressure"} offset 1m) or (kube_node_status_condition{condition="DiskPressure",status="false"} == 0 and kube_node_status_condition{condition="DiskPressure",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience FrequentContainerdRestart then send the alert
+ALERT NodeFrequentContainerdRestart
+  IF          (kube_node_status_condition{condition="FrequentContainerdRestart",status="false"} == 0 unless kube_node_status_condition{condition="FrequentContainerdRestart"} offset 1m) or (kube_node_status_condition{condition="FrequentContainerdRestart",status="false"} == 0 and kube_node_status_condition{condition="FrequentContainerdRestart",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience FrequentDockerRestart then send the alert
+ALERT NodeFrequentDockerRestart
+  IF          (kube_node_status_condition{condition="FrequentDockerRestart",status="false"} == 0 unless kube_node_status_condition{condition="FrequentDockerRestart"} offset 1m) or (kube_node_status_condition{condition="FrequentDockerRestart",status="false"} == 0 and kube_node_status_condition{condition="FrequentDockerRestart",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience FrequentKubeletRestart then send the alert
+ALERT NodeFrequentKubeletRestart
+  IF          (kube_node_status_condition{condition="FrequentKubeletRestart",status="false"} == 0 unless kube_node_status_condition{condition="FrequentKubeletRestart"} offset 1m) or (kube_node_status_condition{condition="FrequentKubeletRestart",status="false"} == 0 and kube_node_status_condition{condition="FrequentKubeletRestart",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience FrequentUnregisterNetDevice then send the alert
+ALERT NodeFrequentUnregisterNetDevice
+  IF          (kube_node_status_condition{condition="FrequentUnregisterNetDevice",status="false"} == 0 unless kube_node_status_condition{condition="FrequentUnregisterNetDevice"} offset 1m) or (kube_node_status_condition{condition="FrequentUnregisterNetDevice",status="false"} == 0 and kube_node_status_condition{condition="FrequentUnregisterNetDevice",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience KernelDeadlock then send the alert
+ALERT NodeKernelDeadlock
+  IF          (kube_node_status_condition{condition="KernelDeadlock",status="false"} == 0 unless kube_node_status_condition{condition="KernelDeadlock"} offset 1m) or (kube_node_status_condition{condition="KernelDeadlock",status="false"} == 0 and kube_node_status_condition{condition="KernelDeadlock",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience MemoryPressure then send the alert
+ALERT NodeMemoryPressure
+  IF          (kube_node_status_condition{condition="MemoryPressure",status="false"} == 0 unless kube_node_status_condition{condition="MemoryPressure"} offset 1m) or (kube_node_status_condition{condition="MemoryPressure",status="false"} == 0 and kube_node_status_condition{condition="MemoryPressure",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience NetworkUnavailable then send the alert
+ALERT NodeNetworkUnavailable
+  IF          (kube_node_status_condition{condition="NetworkUnavailable",status="false"} == 0 unless kube_node_status_condition{condition="NetworkUnavailable"} offset 1m) or (kube_node_status_condition{condition="NetworkUnavailable",status="false"} == 0 and kube_node_status_condition{condition="NetworkUnavailable",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience OutOfDisk then send the alert
+ALERT NodeOutOfDisk
+  IF          (kube_node_status_condition{condition="OutOfDisk",status="false"} == 0 unless kube_node_status_condition{condition="OutOfDisk"} offset 1m) or (kube_node_status_condition{condition="OutOfDisk",status="false"} == 0 and kube_node_status_condition{condition="OutOfDisk",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience PIDPressure then send the alert
+ALERT NodePIDPressure
+  IF          (kube_node_status_condition{condition="PIDPressure",status="false"} == 0 unless kube_node_status_condition{condition="PIDPressure"} offset 1m) or (kube_node_status_condition{condition="PIDPressure",status="false"} == 0 and kube_node_status_condition{condition="PIDPressure",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster experience ReadonlyFilesystem then send the alert
+ALERT NodeReadonlyFilesystem
+  IF          (kube_node_status_condition{condition="ReadonlyFilesystem",status="false"} == 0 unless kube_node_status_condition{condition="ReadonlyFilesystem"} offset 1m) or (kube_node_status_condition{condition="ReadonlyFilesystem",status="false"} == 0 and kube_node_status_condition{condition="ReadonlyFilesystem",status="false"} offset 1m == 1)
+  LABELS      { severity="error" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' {{- if printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query | first | value }} is {{else}} might be {{end -}} experiencing {{ $labels.condition }}",
+    DESCRIPTION = "I have detected that one of your nodes named '{{ $labels.node }}' has value {{- with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='true'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'true' \"}} {{else}} {{ with printf \"kube_node_status_condition{condition='%s',instance='%s',job='%s',node='%s',status='unknown'}\" $labels.condition $labels.instance $labels.job $labels.node | query }} {{if . | first | value }} {{print \" 'unknown' \"}} {{end}} {{end}} {{end}} {{else}} {{print \" <nothing> \"}} {{end -}} associated with condition '{{$labels.condition}}'",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster has become Ready and earlier it was Not Ready then send the alert
+ALERT NodeReady
+  IF          (kube_node_status_condition{condition="Ready",status="true"} == 1 unless kube_node_status_condition{condition="Ready"} offset 1m) or (kube_node_status_condition{condition="Ready",status="true"} == 1 and kube_node_status_condition{condition="Ready",status="true"} offset 1m == 0)
+  LABELS      { severity="info" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' is Ready",
+    DESCRIPTION = "I have observed that one of your nodes named '{{ $labels.node }}' has become Ready",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
+
+# if a node in the cluster has unknown Ready status then generate the alert
+ALERT NodeReadyStatusUnknown
+  IF          (kube_node_status_condition{condition="Ready",status="unknown"} == 1 unless kube_node_status_condition{condition="Ready"} offset 1m) or (kube_node_status_condition{condition="Ready",status="unknown"} == 1 and kube_node_status_condition{condition="Ready",status="unknown"} offset 1m == 0)
+  LABELS      { severity="warning" }
+  ANNOTATIONS {
+    SUMMARY = "Your node '{{ $labels.node }}' has unknown Ready status",
+    DESCRIPTION = "I have observed that one of your nodes named '{{ $labels.node }}' has unknown Ready status",
+    NODE = "{{ $labels.node }}",
+    CONDITION = "{{ $labels.condition }}",
+    STATUS = "{{ $labels.status }}"
+  }
