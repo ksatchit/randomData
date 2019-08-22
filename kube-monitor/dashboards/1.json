@@ -1,4 +1,34 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_OPENEBS",
+      "label": "openebs",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "5.2.0"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": "5.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "5.0.0"
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -128,7 +158,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_OPENEBS}",
       "format": "percent",
       "gauge": {
         "maxValue": 100,
@@ -214,7 +244,7 @@
         "rgba(237, 129, 40, 0.89)",
         "#d44a3a"
       ],
-      "datasource": "Prometheus",
+      "datasource": "${DS_OPENEBS}",
       "decimals": 2,
       "format": "short",
       "gauge": {
@@ -296,7 +326,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "${DS_OPENEBS}",
       "fill": 3,
       "fillGradient": 0,
       "gridPos": {
@@ -485,7 +515,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "decimals": 2,
           "fill": 6,
           "fillGradient": 0,
@@ -585,7 +615,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "decimals": 2,
           "fill": 1,
           "fillGradient": 0,
@@ -700,7 +730,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
@@ -902,7 +932,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
@@ -1094,7 +1124,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1191,7 +1221,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1285,7 +1315,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1379,7 +1409,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1473,7 +1503,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1568,7 +1598,7 @@
           "bars": false,
           "dashLength": 10,
           "dashes": false,
-          "datasource": "Prometheus",
+          "datasource": "${DS_OPENEBS}",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1676,7 +1706,7 @@
           "text": "gke-playground-default-pool-37e10f0d-ffkx",
           "value": "gke-playground-default-pool-37e10f0d-ffkx"
         },
-        "datasource": "Prometheus",
+        "datasource": "${DS_OPENEBS}",
         "definition": "",
         "hide": 0,
         "hideLabel": false,
