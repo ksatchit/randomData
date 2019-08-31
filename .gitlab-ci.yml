@@ -3,10 +3,11 @@ include:
   - remote: 'https://github.com/karthiksatchitanand/litmus/raw/master/gitlab/pod-templates/pod-failure-template.yml'
 
 stages:
-  #- build
-  #- test
-  - staging
-  - chaos
+  #- buildApp
+  - appDeploy
+  - chaosInfraSetup
+  - chaosChartPull
+  - chaosInject
   #- production
 
 #Build:
@@ -14,29 +15,33 @@ stages:
 #  script: 
 #    - <abc>
 
-#Test:
-#  stage: test
-#  script: 
-#    - <def>
-
 Deploy to Staging:
-  # this will be app developer's custom gitlab runner image
-  # typically this stage will have artifact dependencies (kubeconfig)
-  # we have hard-burned it 
-
-  image: ksatchit/appci:gitlab
-  stage: staging
+  stage: appDeploy
+  image: ksatchit/gitlab-runner:ci
   script:
-    - cp /admin.conf ~/.kube/config
-    - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml --kubeconfig=/root/.kube/config 
-     
-Inject Pod Failure Chaos:
-  stage: chaos
-  extends: .pod_failure_template
-  before_script:
-    - cp /admin.conf ~/.kube/config
-  variables:
-    app_ns: default
-    app_label: "app=nginx"
+    - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml 
+    - kubectl apply -f ./sample_apps/nginx/stateless/rbac.yaml 
+
+Setup Chaos Infra:
+  stage: chaosInfraSetup
+  image: ksatchit/gitlab-runner:ci
+  script: 
+    - helm repo add chaos-charts https://litmuschaos.github.io/chaos-charts
+    - helm repo update chaos-charts
+    - helm install chaos-charts/litmus --namespace=litmus 
+  
+Setup Chaos Infra:
+  stage: chaosChartPull
+  image: ksatchit/gitlab-runner:ci
+  script: 
+    - helm install chaos-charts/kubernetes 
+ 
+#Inject Pod Failure Chaos:
+#  stage: chaos
+#  extends: .pod_failure_template
+#  before_script:
+#  variables:
+#    app_ns: default
+#    app_label: "app=nginx"
    
   

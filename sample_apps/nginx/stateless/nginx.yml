@@ -20,6 +20,8 @@ metadata:
   namespace: default 
   labels:
     app: nginx
+  annotations:
+    litmuschaos.io/chaos: "true"
 spec:
   replicas: 2
   selector:
