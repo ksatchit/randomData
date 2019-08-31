@@ -34,9 +34,8 @@ Install Chaos Charts:
   stage: chaosChartPull
   image: ksatchit/gitlab-runner:ci
   script:
-    #- ./hack/helm_setup chaos-charts https://litmuschaos.github.io/chaos-charts
-    - helm version --host 35.188.95.66:31090
-    - helm install --name=chaos-experiments chaos-charts/kubernetes --host 35.188.95.66:31090 
+    - ./hack/helm_setup chaos-charts https://litmuschaos.github.io/chaos-charts
+    - helm install --name=chaos-experiments chaos-charts/kubernetes  
 
 #Inject Pod Failure Chaos:
 #  stage: chaos
@@ -52,7 +51,7 @@ Cleanup Chaos Infra:
   script: 
     #- kubectl delete ns litmus 
     #- kubectl delete crds chaosengines.litmuschaos.io chaosexperiments.litmuschaos.io chaosresults.litmuschaos.io litmusresults.litmus.io
-    - helm version --host 35.188.95.66:31090
-    - helm delete litmus --purge --host 35.188.95.66:31090
-    - helm delete chaos-experiments --purge --host 35.188.95.66:31090
+    - helm version
+    - helm delete litmus --purge 
+    - helm delete chaos-experiments --purge
   when: always
