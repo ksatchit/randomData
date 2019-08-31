@@ -7,7 +7,8 @@ stages:
   - appDeploy
   - chaosInfraSetup
   - chaosChartPull
-  - chaosInject
+  #- chaosInject
+  #- chaosInfraCleanup
   #- production
 
 #Build:
