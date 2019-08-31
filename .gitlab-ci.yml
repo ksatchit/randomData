@@ -31,7 +31,7 @@ Setup Chaos Infra:
     - helm repo update
     - helm install chaos-charts/litmus --namespace=litmus 
   
-Setup Chaos Infra:
+Install Chaos Charts:
   stage: chaosChartPull
   image: ksatchit/gitlab-runner:ci
   script: 
