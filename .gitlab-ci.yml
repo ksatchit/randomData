@@ -49,9 +49,7 @@ Cleanup Chaos Infra:
   stage: chaosInfraCleanup
   image: ksatchit/gitlab-runner:ci
   script: 
-    #- kubectl delete ns litmus 
-    #- kubectl delete crds chaosengines.litmuschaos.io chaosexperiments.litmuschaos.io chaosresults.litmuschaos.io litmusresults.litmus.io
-    - helm version
     - helm delete litmus --purge 
     - helm delete chaos-experiments --purge
+    - kubectl delete crds chaosengines.litmuschaos.io chaosexperiments.litmuschaos.io chaosresults.litmuschaos.io litmusresults.litmus.io
   when: always
