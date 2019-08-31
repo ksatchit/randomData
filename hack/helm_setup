@@ -1,0 +1,5 @@
+#!/bin/bash
+
+helm init --client-only
+helm repo add $1 $2
+helm repo update

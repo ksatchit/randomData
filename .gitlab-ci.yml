@@ -27,18 +27,16 @@ Setup Chaos Infra:
   stage: chaosInfraSetup
   image: ksatchit/gitlab-runner:ci
   script:
-    - helm init --client-only 
-    - helm repo add chaos-charts https://litmuschaos.github.io/chaos-charts
-    - helm repo update
+    - ./hack/helm_setup chaos-charts https://litmuschaos.github.io/chaos-charts
     - helm install --name=litmus chaos-charts/litmus --namespace=litmus 
   
 Install Chaos Charts:
   stage: chaosChartPull
   image: ksatchit/gitlab-runner:ci
   script:
-    - kubectl get crds | grep chaos
-    - kubectl apply -f https://raw.githubusercontent.com/litmuschaos/community-charts/master/charts/kubernetes/state/experiments/container-kill-exp.v0.1.0.yaml
- 
+    - ./hack/helm_setup chaos-charts https://litmuschaos.github.io/chaos-charts
+    - helm install chaos-charts/kubernetes 
+
 #Inject Pod Failure Chaos:
 #  stage: chaos
 #  extends: .pod_failure_template
