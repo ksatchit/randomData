@@ -8,7 +8,7 @@ stages:
   - chaosInfraSetup
   - chaosChartPull
   #- chaosInject
-  #- chaosInfraCleanup
+  - chaosInfraCleanup
   #- production
 
 #Build:
@@ -29,13 +29,13 @@ Setup Chaos Infra:
   script: 
     - helm repo add chaos-charts https://litmuschaos.github.io/chaos-charts
     - helm repo update
-    - helm install chaos-charts/litmus --namespace=litmus 
+    - helm install --name=litmus chaos-charts/litmus --namespace=litmus 
   
 Install Chaos Charts:
   stage: chaosChartPull
   image: ksatchit/gitlab-runner:ci
   script: 
-    - helm install chaos-charts/kubernetes 
+    - kubectl apply -f https://raw.githubusercontent.com/litmuschaos/community-charts/master/charts/kubernetes/state/experiments/container-kill-exp.v0.1.0.yaml 
  
 #Inject Pod Failure Chaos:
 #  stage: chaos
@@ -45,4 +45,9 @@ Install Chaos Charts:
 #    app_ns: default
 #    app_label: "app=nginx"
    
-  
+Cleanup Chaos Infra:
+  stage: chaosInfraCleanup
+  image: ksatchit/gitlab-runner:ci
+  script: 
+    - helm repo update
+    - helm delete litmus --purge  
