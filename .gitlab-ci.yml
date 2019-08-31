@@ -34,8 +34,10 @@ Install Chaos Charts:
   stage: chaosChartPull
   image: ksatchit/gitlab-runner:ci
   script:
+    - helm list
     - ./hack/helm_setup chaos-charts https://litmuschaos.github.io/chaos-charts
     - helm install --name=chaos-experiments chaos-charts/kubernetes  
+    - helm list
 
 #Inject Pod Failure Chaos:
 #  stage: chaos
