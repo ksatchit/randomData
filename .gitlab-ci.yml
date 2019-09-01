@@ -46,6 +46,6 @@ Cleanup Chaos Infra:
   stage: chaosInfraCleanup
   image: ksatchit/gitlab-runner:ci
   script:
-    - ./helm_teardown litmus chaos-experiments
-    - ./helm_teardown crds 
+    - ./hack/helm_teardown litmus chaos-experiments
+    - ./hack/helm_teardown crds 
   when: always
