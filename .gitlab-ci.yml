@@ -9,11 +9,6 @@ stages:
   - chaosInject
   - chaosInfraCleanup
 
-#Build:
-#  stage: build
-#  script: 
-#    - <abc>
-
 Deploy to Staging:
   stage: appDeploy
   image: ksatchit/gitlab-runner:ci
