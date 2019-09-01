@@ -1,5 +1,9 @@
 #!/bin/bash
 
 helm init --client-only
-helm repo add $1 $2
+helm repo add chaos-charts https://litmuschaos.github.io/chaos-charts
 helm repo update
+chart=$(echo $2 | cut -d "=" -f 2)
+helm install $1 chaos-charts/$chart $3 
+
+  

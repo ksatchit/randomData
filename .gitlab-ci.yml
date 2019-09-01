@@ -3,13 +3,11 @@ include:
   - remote: 'https://github.com/karthiksatchitanand/litmus/raw/master/gitlab/pod-templates/pod-failure-template.yml'
 
 stages:
-  #- buildApp
   - appDeploy
   - chaosInfraSetup
   - chaosChartPull
-  #- chaosInject
+  - chaosInject
   - chaosInfraCleanup
-  #- production
 
 #Build:
 #  stage: build
@@ -20,38 +18,34 @@ Deploy to Staging:
   stage: appDeploy
   image: ksatchit/gitlab-runner:ci
   script:
-    - kubectl apply -f ./sample_apps/nginx/stateless/nginx.yml 
-    - kubectl apply -f ./sample_apps/nginx/stateless/rbac.yaml 
+    - kubectl apply -f ./sample_apps/nginx/stateless/ 
 
 Setup Chaos Infra:
   stage: chaosInfraSetup
   image: ksatchit/gitlab-runner:ci
   script:
-    - ./hack/helm_setup chaos-charts https://litmuschaos.github.io/chaos-charts
-    - helm install --name=litmus chaos-charts/litmus --namespace=litmus 
+    - ./hack/helm_setup --name=litmus --chart=litmus --namespace=litmus 
   
 Install Chaos Charts:
   stage: chaosChartPull
   image: ksatchit/gitlab-runner:ci
   script:
-    - helm list
-    - ./hack/helm_setup chaos-charts https://litmuschaos.github.io/chaos-charts
-    - helm install --name=chaos-experiments chaos-charts/kubernetes  
-    - helm list
+    - ./hack/helm_setup --name=chaos-experiments --chart=kubernetes --namespace=default 
 
-#Inject Pod Failure Chaos:
-#  stage: chaos
-#  extends: .pod_failure_template
-#  before_script:
-#  variables:
-#    app_ns: default
-#    app_label: "app=nginx"
+Inject Pod Failure Chaos:
+  stage: chaosInject
+  extends: .pod_failure_template
+  before_script:
+  variables:
+    app_ns: default
+    app_label: "app=nginx"
+    app_kind: deployment
+    app_svc_account: nginx
    
 Cleanup Chaos Infra:
   stage: chaosInfraCleanup
   image: ksatchit/gitlab-runner:ci
-  script: 
-    - helm delete litmus --purge 
-    - helm delete chaos-experiments --purge
-    - kubectl delete crds chaosengines.litmuschaos.io chaosexperiments.litmuschaos.io chaosresults.litmuschaos.io litmusresults.litmus.io
+  script:
+    - ./helm_teardown litmus chaos-experiments
+    - ./helm_teardown crds 
   when: always
