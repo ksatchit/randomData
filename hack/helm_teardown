@@ -5,7 +5,7 @@ helm list
 for i in $@
 do
   if [[ $i == "crds" ]]; then
-    kubectl delete chaosengines.litmuschaos.io chaosexperiments.litmuschaos.io chaosresults.litmuschaos.io litmusresults.litmus.io
+    kubectl delete crds chaosengines.litmuschaos.io chaosexperiments.litmuschaos.io chaosresults.litmuschaos.io litmusresults.litmus.io
   else
     helm delete $i --purge
   fi 
