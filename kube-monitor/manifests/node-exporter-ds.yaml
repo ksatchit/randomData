@@ -1,61 +1,110 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: node-exporter
-  namespace: monitoring
   labels:
-    name: node-exporter
+    app: node-exporter
+  name: node-exporter
+  selfLink: /apis/extensions/v1beta1/namespaces/openebs/daemonsets/node-exporter
 spec:
+  selector:
+    matchLabels:
+      app: node-exporter
   template:
     metadata:
+      creationTimestamp: null
       labels:
-        name: node-exporter
-      annotations:
-         prometheus.io/scrape: "true"
-         prometheus.io/port: "9100"
+        app: node-exporter
+      name: node-exporter
     spec:
-      hostPID: true
-      hostIPC: true
-      hostNetwork: true
       containers:
-        - name: node-exporter
-          image: prom/node-exporter:v0.15.2
-          securityContext:
-            privileged: true
-          args:
-            - --path.procfs=/host/proc
-            - --path.sysfs=/host/sys
-            - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+)($|/)
-            - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$
-          ports:
-            - containerPort: 9100
-              protocol: TCP
-          resources:
-            limits:
-              cpu: 100m
-              memory: 100Mi
-            requests:
-              cpu: 10m
-              memory: 100Mi
-          volumeMounts:
-            - name: dev
-              mountPath: /host/dev
-            - name: proc
-              mountPath: /host/proc
-            - name: sys
-              mountPath: /host/sys
-            - name: rootfs
-              mountPath: /rootfs
+      - args:
+        - --path.procfs=/host/proc
+        - --path.sysfs=/host/sys
+        - --path.rootfs=/host/root
+        - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib|run|boot|home/kubernetes/.+)($|/)
+        - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$
+        - --collector.textfile.directory=/shared_vol
+        image: quay.io/prometheus/node-exporter:v0.18.1
+        imagePullPolicy: IfNotPresent
+        name: node-exporter
+        ports:
+        - containerPort: 9100
+          hostPort: 9100
+          name: scrape
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 500m
+            memory: 700M
+          requests:
+            cpu: 128m
+            memory: 128M
+        volumeMounts:
+        - mountPath: /host/proc
+          name: proc
+        - mountPath: /host/sys
+          name: sys
+        - mountPath: /host/root
+          mountPropagation: HostToContainer
+          name: root
+        - mountPath: /shared_vol
+          name: tmpvol
+      - args:
+        - -c
+        - ./textfile_collector.sh
+        command:
+        - /bin/bash
+        env:
+        - name: TEXTFILE_PATH
+          value: /shared_vol
+        - name: COLLECT_INTERVAL
+          value: "10"
+        image: ksatchit/pv-monitor:latest
+        imagePullPolicy: Always
+        name: pv-monitor
+        volumeMounts:
+        - mountPath: /host/proc
+          name: proc
+        - mountPath: /host/sys
+          name: sys
+        - mountPath: /host/root
+          mountPropagation: HostToContainer
+          name: root
+          readOnly: true
+        - mountPath: /shared_vol
+          name: tmpvol
+      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      hostPID: true
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: openebs-maya-operator
+      serviceAccountName: openebs-maya-operator
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
       volumes:
-        - name: proc
-          hostPath:
-            path: /proc
-        - name: dev
-          hostPath:
-            path: /dev
-        - name: sys
-          hostPath:
-            path: /sys
-        - name: rootfs
-          hostPath:
-            path: /
+      - hostPath:
+          path: /proc
+          type: ""
+        name: proc
+      - hostPath:
+          path: /sys
+          type: ""
+        name: sys
+      - hostPath:
+          path: /
+          type: ""
+        name: root
+      - emptyDir: {}
+        name: tmpvol
+  templateGeneration: 15
+  updateStrategy:
+    type: OnDelete
+status:
+  currentNumberScheduled: 0
+  desiredNumberScheduled: 0
+  numberMisscheduled: 0
+  numberReady: 0
