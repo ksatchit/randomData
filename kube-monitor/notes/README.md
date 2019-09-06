@@ -25,7 +25,7 @@ visualize the metrics collected by prometheus, with dashboards constructed using
 
 The metrics collected from the cluster are: 
  
-- OpenEBS volume & pool metrics: Available for Jiva and cStor. These are collected by prometheus exporters that are launched as sidecars 
+- **OpenEBS volume & pool metrics**: Available for Jiva and cStor. These are collected by prometheus exporters that are launched as sidecars 
   in the volume target and pool deployments by Maya
 
   - Areas to note: 
@@ -37,7 +37,7 @@ The metrics collected from the cluster are:
       - Volume stats: https://github.com/openebs/openebs/blob/master/k8s/openebs-pg-dashboard.json
       - Pool stats: https://github.com/openebs/openebs/blob/master/k8s/openebs-pool-exporter.json
 
-- Node metrics: Collected by the prometheus node exporter, launched as a daemonset. 
+- **Node metrics**: Collected by the prometheus node exporter, launched as a daemonset. 
 
   - Manifest: https://github.com/openebs/openebs/blob/master/k8s/openebs-monitoring-pg.yaml#L369
 
@@ -51,18 +51,18 @@ The metrics collected from the cluster are:
 
   - Grafana dashboard: https://github.com/openebs/openebs/blob/master/k8s/openebs-node-exporter.json
 
-- Kubernetes (Object) resource metrics: Collected by the kube-state-metrics which generates the metrics from the kubernetes APIs. 
+- **Kubernetes (Object) resource metrics**: Collected by the kube-state-metrics which generates the metrics from the kubernetes APIs. 
 
   - Manifest: https://github.com/openebs/openebs/blob/master/k8s/openebs-kube-state-metrics.yaml
   
   - Grafana dashboard: https://github.com/openebs/openebs/blob/master/k8s/openebs-kube-state-metrics.json
 
-- Kubelet & Container metrics: cAdvisor (Container Advisor) provides resource usage and performance characteristics of the running containers
+- **Kubelet & Container metrics**: cAdvisor (Container Advisor) provides resource usage and performance characteristics of the running containers
 
     - Manifest (scrape job): https://github.com/openebs/openebs/blob/master/k8s/openebs-monitoring-pg.yaml#L129
 
     - Grafana dashboard: https://github.com/openebs/openebs/blob/master/k8s/openebs-kubelet-cAdvisor.json
 
-#### Challenges
+### Challenges
 
 
