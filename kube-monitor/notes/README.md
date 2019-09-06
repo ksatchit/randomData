@@ -10,6 +10,8 @@ This README summarizes recommended usage steps & provides notes on specific comp
 introduced, or solutions found to challenges listed. Mostly, these manifests are collections of standard deployment specs of popular opensource tools, 
 tweaked slightly to suit the OpenEBS context, where necessary. 
 
+**Note**: All the components below are run in `openebs` or any other in which they co-exist with other components of the OpenEBS control plane stack. 
+
 ## Metrics Collection & Visualization
 
 The metrics are collected by a set of prometheus exporters & pulled periodically (scrape_interval) by the Prometheus server. Grafana is used to 
@@ -125,4 +127,37 @@ kubelet_volume_stats_used_bytes{namespace="default",persistentvolumeclaim="demo-
 kubelet_volume_stats_used_bytes{namespace="default",persistentvolumeclaim="demo-vol2-claim"} 2.31596032e+09
 ```
 
+## Logging 
+
+Use the following step (requires setup of helm client & tiller server on the server) to setup grafana loki stack on the cluster. 
+On the grafana console, select loki as the datasource and provide the appropriate URL (typically http://loki:3100) to visualize logs.
+
+```
+helm repo add loki https://grafana.github.io/loki/charts
+helm repo update
+helm upgrade --install loki --namespace=openebs loki/loki-stack
+```
+
+NOTE: A sample template specification of the components in the loki stack can be found here (obtained as part of helm --debug --dry-run command): 
+https://github.com/openebs/openebs/blob/master/k8s/sample-loki-templates.md
+
+
+Loki gives developers the best of both worlds - simplicity: ability to tail, use split views, query by labels & ability to index & store logs permanently. 
+
+
+## Alerting
+
+Prometheus AlertManager is used to configure alerts, based on prometheus metrics. The manifests include a simple email receiver configuration, this 
+can be extended to other receivers as desired, for ex: slack.
+
+
+- Manifests:
+ 
+    - Rules: https://github.com/openebs/openebs/blob/master/k8s/openebs-monitoring-pg.yaml#L164
+    - AlertManager Config & Deployment: https://github.com/openebs/openebs/blob/master/k8s/openebs-alertmanager.yaml
+
+- Areas to note: 
+
+    - Current rules are a minimal list of important system & vol alerts. 
+    - A good list is available here: https://awesome-prometheus-alerts.grep.to/ 
 
