@@ -56,3 +56,13 @@ The metrics collected from the cluster are:
   - Manifest: https://github.com/openebs/openebs/blob/master/k8s/openebs-kube-state-metrics.yaml
   
   - Grafana dashboard: https://github.com/openebs/openebs/blob/master/k8s/openebs-kube-state-metrics.json
+
+- Kubelet & Container metrics: cAdvisor (Container Advisor) provides resource usage and performance characteristics of the running containers
+
+    - Manifest (scrape job): https://github.com/openebs/openebs/blob/master/k8s/openebs-monitoring-pg.yaml#L129
+
+    - Grafana dashboard: https://github.com/openebs/openebs/blob/master/k8s/openebs-kubelet-cAdvisor.json
+
+#### Challenges
+
+
