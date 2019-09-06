@@ -65,4 +65,28 @@ The metrics collected from the cluster are:
 
 ### Challenges
 
+One of the challenges is in obtaining the utilization metrics for individual (specifically, Local) PV mounts, though the impact of aggregated usage 
+can be obtained from the pool (mounted) disk, i.e., one contributing to the backend storage of PVs. Ideal requirement is to gauge utilization per mount
+as in the way of other mounted disks. The current limitation in achieving this is:
+
+- The PV is mounted at `/var/lib/kubelet/<pod_id>/<plugin_path>/<pv_name>`. While with mountPropagation set on the node-exporter container, these mounts can be
+  auto-detected/monitored, the `/var/lib/kubelet` contains several other mounts whose monitoring may not be *desired* or is *redundant*. Such as: `/var/lib/kubelet` 
+  parent path itself,which is mounted on the root disk typically.
+
+- Note: The PVC/PV size is obtained from the kube-state-metrics though
+
+Some of the issues & articles around obtaining volume utilization metrics include: 
+  
+- https://github.com/coreos/prometheus-operator/issues/2359
+- https://stackoverflow.com/questions/55899797/how-to-monitor-disk-usage-of-persistent-volumes
+- https://bugzilla.redhat.com/show_bug.cgi?id=1373288
+
+Alternate ways to do this - need to explore
+
+- https://github.com/google/cadvisor/issues/1702 (useful). There is a way do to this by constructing queries around `kubelet_volume_stats_available_bytes` & 
+  `kubelet_volume_stats_used_bytes` --> This needs to be explored (metrics are not available from cAdvisor endpoint, seems like need to query separately from *kubelet's*
+  */metrics* endpoint (unsure if this needs some vendor implementation)
+
+
+
 
