@@ -1,0 +1,4 @@
+## TODO:
+
+- Write collection logic from template stage in ci/gitlab/utils/litmus
+- Get the graphs visible in MO/Gecko

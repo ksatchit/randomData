@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: chaos-metrics
+  namespace: gitlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chaos-exporter
+  template:
+    metadata:
+      name: chaos-metrics
+      labels:
+        app: chaos-exporter
+    spec:
+      containers:
+      - name: chaos-metrics
+        image: quay.io/prometheus/node-exporter:v0.18.1
+        args:
+          - --collector.textfile.directory=/shared_vol
+        ports:
+        - name: scrape
+          containerPort: 9100
+          hostPort: 9100
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /shared_vol
+          name: tmpvol
+      - name: chaos-monitor
+        image: ksatchit/chaos-monitor:ci
+        imagePullPolicy: Always
+        env:
+        - name: METRICS_FILE_URL
+          value: "https://gitlab.com/litmuschaos/demo-app/raw/exporter/chaos_metrics.prom"
+        - name: POLLING_INTERVAL
+          value: "10"
+        command: 
+        - /bin/bash
+        args:
+        - -c 
+        - ./chaos_collector.sh
+        volumeMounts:
+        - mountPath: /shared_vol
+          name: tmpvol
+      volumes:
+      - emptyDir: {}
+        name: tmpvol
