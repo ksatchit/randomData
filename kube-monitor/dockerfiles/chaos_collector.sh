@@ -1,8 +1,8 @@
 #!/bin/bash
 
-METRICS_GIT_URL="https://gitlab.com/litmuschaos/demo-app.git"
-METRICS_GIT_BRANCH="exporter"
-POLLING_INTERVAL="5"
+METRICS_GIT_URL=${METRICS_GIT_URL:=https://gitlab.com/litmuschaos/demo-app.git}
+METRICS_GIT_BRANCH=${METRICS_GIT_BRANCH:=exporter}
+POLLING_INTERVAL=${POLLING_INTERVAL:=5}
 
 echo "METRICS REPO: ${METRICS_GIT_URL}"
 echo "METRICS BRANCH: ${METRICS_GIT_BRANCH}" 
