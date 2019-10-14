@@ -1,6 +1,13 @@
 dist: trusty
 sudo: required
 install: true
+
+addons:
+  sonarcloud:
+    organization: "ksatchit"
+    token:
+      secure: "DFPql9MD8cJtdGXXygUz/AMuDGTbOe6xadiXrX9RaHJz/bwZOsk1B1Xe6q4TtY46+cbMpvjfbc1zOzL8PLtqMxKH4/q5gsw2DRKsTCNJcdTzwaBrp9NW1l/r7LMpm68gDjCJ6sWWne0fC3zGe5/+RzbLeq2c9H/09+XUzFtAnSwP94bqjV44s2CJIseGCjj0nGB+3bjpSzttlOMd7XtXsMm4+0xvYlZ4Q2KhB0d8hV1gPvIwk6hnenEUAkBVUjRQU/tBnb/NCBCCn+4oghzK3JTEYd5Fq4Yvip/ozUVplmcC9B1se/h2ySTHH/z3siU6nPGhaB4UUJRylIxdOt4uk9KbXbKCELFj86xzZvKW0PkXhhEpG17Jt9b/w7K2inL0XbAIyiX/ocIODcM8VC0qDFPrk8EP0eKLKNZM/NpDOUHJ13Qb65ezyY5f+SkcKkTFBu5dPGzcRJPg8KziOHvni/looGUByz9oSP3JRIiq8VIVW5v7uBhwaxEt3Ke49NaPyPCaCBto0G9cLoJPo8oOlYgmSeHVSVZP9fKRSLGzKSM2YTmqIrS5ZYSgF7FjD6s47QfraPzUEybic7SG1qzpwn2ZpjMdP01StJrk9WwsJCrHxAK61n7eSTaYH+Pi5HHV4uvcSbeRJs1y4p+QjxfXEb+2JTkfscWlq8uX3KLoPnE=" # encrypted value of your token
+
 language: go
 go:
   - 1.11.2
@@ -13,3 +20,4 @@ before_install:
   - sudo apt-get install -y curl
 script:
   - make
+  - sonar-scanner
