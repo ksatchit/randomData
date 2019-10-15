@@ -14,7 +14,8 @@ jobs:
           paths: 
             - image.tar
   push:
-    machine: circleci/classic:201808-01
+    machine: 
+      image: circleci/classic:201808-01
     steps: 
       - attach_workspace:
           at: /tmp/workspace
@@ -25,7 +26,8 @@ jobs:
           docker push ksatchit/alpine-netcat:latest
 
   release: 
-    machine: circleci/classic:201808-01
+    machine: 
+      image: circleci/classic:201808-01
     steps: 
       - attach_workspace:
           at: /tmp/workspace
