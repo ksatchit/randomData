@@ -20,6 +20,6 @@
 #
 FROM alpine:latest
 RUN apk add nmap-ncat fio
-COPY run-nc.sh /
+#COPY run-nc.sh /
 
-CMD ["/run-nc.sh"]
+#CMD ["/run-nc.sh"]
