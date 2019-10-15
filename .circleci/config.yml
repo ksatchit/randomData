@@ -19,7 +19,7 @@ jobs:
     steps: 
       - attach_workspace:
           at: /tmp/workspace
-      - run: checkout
+      - checkout
       - run: |
           docker load -i /tmp/workspace/image.tar
           docker login -u "${DNAME}" -p "${DPASS}";
@@ -31,7 +31,7 @@ jobs:
     steps: 
       - attach_workspace:
           at: /tmp/workspace
-      - run: checkout
+      - checkout
       - run: |
           docker load -i /tmp/workspace/image.tar
           image_id=$( docker images -q ksatchit/alpine-netcat:latest )
