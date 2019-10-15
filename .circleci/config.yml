@@ -1,12 +1,54 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: alpine
+    machine:
+      image: circleci/classic:201808-01
     steps:
       - checkout
-      - run:
-          name: helm-github-pages
-          environment:
-            - GITHUB_PAGES_REPO: ksatchit/chaos-charts
-          command: wget -O - https://raw.githubusercontent.com/ksatchit/helm-github-pages/master/publish.sh | sh
+      - run: mkdir -p workspace
+      - run: | 
+          docker build . -f alpine-netcat/Dockerfile.alpine -t ksatchit/alpine-netcat:latest 
+          docker save -o workspace/image.tar ksatchit/alpine-netcat:latest 
+      - persist_to_workspace:
+          root: workspace
+          paths: 
+            - image.tar
+  push:
+    machine: circleci/classic:201808-01
+    steps: 
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: checkout
+      - run: |
+          docker load -i /tmp/workspace/image.tar
+          docker login -u "${DNAME}" -p "${DPASS}";
+          docker push ksatchit/alpine-netcat:latest
+
+  release: 
+    machine: circleci/classic:201808-01
+    steps: 
+      - attach_workspace:
+          at: /tmp/workspace
+      - run: checkout
+      - run: |
+          docker load -i /tmp/workspace/image.tar
+          image_id=$( docker images -q ksatchit/alpine-netcat:latest )
+          docker login -u "${DNAME}" -p "${DPASS}";
+          docker tag ${image_id} ksatchit/alpine-netcat:${CIRCLE_TAG}
+          docker push ksatchit/alpine-netcat:${CIRCLE_TAG}
+        
+workflows:
+  version: 2
+  operator_build_deploy:
+    jobs:
+      - build
+      - push:
+          requires:
+            - build
+      - release:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /.*/
+
