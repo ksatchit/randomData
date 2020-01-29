@@ -3,7 +3,7 @@
 Random snippets & artifacts on test automation, CI/CD, tools, kubernetes, etc..,
 
 ### TestData
-#test commit to see if we are able to auto pull changes to source code if new commits added to this doc
+
 [embedmd]:# (https://raw.githubusercontent.com/ksatchit/talk-chaos/master/sample-engine.yaml yaml) 
 ```yaml
 apiVersion: litmuschaos.io/v1alpha1
@@ -13,7 +13,7 @@ metadata:
   namespace: default
 spec:
   # It can be app/infra
-  chaosType: "app"
+  annotationCheck: "true"
   #ex. values: ns1:name=percona,ns2:run=nginx
   auxiliaryAppInfo: ""
   appinfo:
