@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liveness-deploy
+  labels:
+    name: liveness-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: liveness-deploy
+  template:
+    metadata: 
+      labels:
+        name: liveness-deploy
+    spec:
+      containers:
+      - name: liveness-business-logic
+        image: ksatchit/liveness-service:ci
+        imagePullPolicy: Always
+        env:
+          - name: LIVENESS_PERIOD_SECONDS
+            value: '10'
+        command: ["/bin/bash"]
+        args: ["-c", "bash business_logic.sh"]
+        volumeMounts:
+        - mountPath: /var/tmp
+          name: status-volume
+      - name: webserver
+        image: ksatchit/liveness-service:ci
+        imagePullPolicy: Always
+        command: ["/bin/bash"]
+        args: ["-c", "bash webserver.sh"]
+        ports: 
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /var/tmp
+          name: status-volume
+      volumes:
+      - name: status-volume
+        emptyDir: {} 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: liveness-service
+  labels:
+    name: liveness-service
+spec:
+  ports:
+  - port: 8080
+    name: liveness
+    protocol: TCP
+  selector:
+    name: liveness-deploy
