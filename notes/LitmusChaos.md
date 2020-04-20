@@ -249,7 +249,7 @@ Yes. This project meets the definition of Cloud Native.
 
 Examples of review: 
   - https://github.com/litmuschaos/chaos-operator/pull/193
-	- https://github.com/litmuschaos/litmus/pull/1015
+  - https://github.com/litmuschaos/litmus/pull/1015
   - https://github.com/litmuschaos/chaos-runner/pull/33
   - https://github.com/litmuschaos/litmus/pull/1345
   - https://github.com/litmuschaos/litmus-e2e/pull/50
