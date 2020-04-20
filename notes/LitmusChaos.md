@@ -34,6 +34,12 @@ The goal of LitmusChoas project is to provide infrastructure toolset to do end t
     - Wipro
     - ArgoAI
     - Zebrium
+    
+  References from community adoption: 
+  
+  - https://www.zebrium.com/blog/using-autonomous-monitoring-with-litmus-chaos-engine-on-kubernetes
+  - *youtube link of community sync up w/ intuit demo*
+  - *youtube link meetup w/ intuit demo and chaos integration*
 
 
 Chaos experiments are hosted on https://hub.litmuschaos.io. It is a central hub where the application developers or vendors share their chaos experiments so that their users can use them to increase the resilience of the applications in production.
@@ -46,14 +52,18 @@ Chaos experiments are hosted on https://hub.litmuschaos.io. It is a central hub 
 - Per-experiment minimal RBAC permissions definition
 - Helm3 charts for Litmus Chaos (operator, kubernetes/generic chaos charts)
 - Support for Kubernetes events for chaos experiments
-- Support for admin mode (centralized chaos management)
+- Support for admin mode (centralized chaos management from single namespace)
 - Centralized Hub for chaos experiments
 - Documentation (user & developer guides, integration with other chaos tools)
 - Gitlab e2e pipeline for chaos experiments
 - Define community sync up schedule
 
-
 ## Future Plans
+
+In summary, LitmusChaos project has achieved the milestone of having a basic infrastructure toolset to do chaos engineering 
+on Kubernetes. In the short term, the plan is to add chaos monitoring support and many other application chaos charts to chaos 
+hub. In the long term, LitmusChaos team wants to work with many projects or applications in the CNCF landscape to integrate 
+Litmus into their chaos engineering or reliability engineering needs.
 
 #### In-Progress (Near-term)
 
@@ -73,14 +83,14 @@ Chaos experiments are hosted on https://hub.litmuschaos.io. It is a central hub 
 
 #### Backlog
 
-Support for Kubernetes pod scheduling policies (affinity rules for chaos resources)
-Support for cloudevents compliant chaos events
-Kubectl plugin for CLI based execution of chaos experiments
-Increased chaos metrics via prometheus chaos exporter
-CI (Gitlab) chaos templates
-Migration to native Kubernetes ansible modules for ansible-based experiments
-Improved application Chaos Suites (OpenEBS, Kafka, Cassandra)
-Support for platform (AWS, GKE, vSphere) Chaos
+- Support for Kubernetes pod scheduling policies (affinity rules for chaos resources)
+- Support for cloudevents compliant chaos events
+- Kubectl plugin for CLI based execution of chaos experiments
+- Increased chaos metrics via prometheus chaos exporter
+- CI (Gitlab) chaos templates
+- Migration to native Kubernetes ansible modules for ansible-based experiments
+- Improved application Chaos Suites (OpenEBS, Kafka, Cassandra)
+- Support for platform (AWS, GKE, vSphere) Chaos
 
 # Project Scope
 
@@ -312,7 +322,7 @@ comprising developers and SREs. The feedback is received via github issues or du
 - "Sumit Nagal",@sumitnagal,Intuit
 - "Uma Mukkara",@umamukkara,MayaData
 
-The adoptors file is managed [here](https://github.com/litmuschaos/litmus/blob/master/ADOPTERS.md).
+The adopters file is managed [here](https://github.com/litmuschaos/litmus/blob/master/ADOPTERS.md).
 
 **How long has the project been developed for?**
 
@@ -346,8 +356,6 @@ We use #litmus channel in Kubernetes Slack.
 Yes. All the code will be under CNCF managed orgs and repos. 
 
 **Are all defaults for upstream reporting either unset or community hosted infrastructure (i.e. doesn’t point to vendor hosted SaaS control plane or analytics server for usage data)? Is all project naming independent of vendors?**
-
-
 
 **Relevant Assets regarding vendor independence**
 
