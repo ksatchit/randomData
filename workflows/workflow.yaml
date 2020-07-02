@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  name: greetflow-test
+  name: greetflow-test-demo
 spec:
   entrypoint: greet
   serviceAccountName: argo-chaos-default
