@@ -10,8 +10,15 @@ spec:
     steps:
     - - name: hello
         template: hello
+    - - name: another-hello
+        template: another-hello
   - name: hello
     container:
       image: alpine:3.6
       command: [sh, -c]
       args: ["echo \"Hi, it is a demo on red-blue clusters!\"; sleep 60"]
+  - name: another-hello
+    container:
+      image: alpine:3.6
+      command: [sh, -c]
+      args: ["echo \"Hi, this is a parallel workflow on red-blue clusters!\"; sleep 60"]
