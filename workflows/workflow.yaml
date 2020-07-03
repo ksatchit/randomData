@@ -10,8 +10,8 @@ spec:
     steps:
     - - name: hello
         template: hello
-   - - name: another-hello
-       template: another-hello
+    - - name: another-hello
+        template: another-hello
   - name: hello
     container:
       image: alpine:3.6
