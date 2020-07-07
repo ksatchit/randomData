@@ -7,7 +7,7 @@ spec:
   concurrencyPolicy: "Replace"
   startingDeadlineSeconds: 0
   workflowSpec:
-    entrypoint: whalesay
+    entrypoint: argowf-chaos
     serviceAccountName: argo-chaos
     arguments:
     parameters:
