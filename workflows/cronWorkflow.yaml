@@ -37,11 +37,11 @@ spec:
               kind: ChaosEngine
               metadata:
                 name: catalogue-chaos
-                namespace: {{workflow.parameters.adminModeNamespace}}
+                namespace: {{workflowSpec.parameters.adminModeNamespace}}
               spec:
                 appinfo:
-                  appns: {{workflow.parameters.appNamespace}}
-                  applabel: "name={{workflow.parameters.appLabelCarts}}"
+                  appns: {{workflowSpec.parameters.appNamespace}}
+                  applabel: "name={{workflowSpec.parameters.appLabelCarts}}"
                   appkind: deployment
                 jobCleanUpPolicy: retain
                 monitoring: false
@@ -62,7 +62,7 @@ spec:
       container:
         image: lachlanevenson/k8s-kubectl
         command: [sh, -c]
-        args: ['kubectl apply -f /tmp/chaosengine-1.yaml -n {{workflow.parameters.adminModeNamespace}}']
+        args: ['kubectl apply -f /tmp/chaosengine-1.yaml -n {{workflowSpec.parameters.adminModeNamespace}}']
 
     - name: run-orders-chaos
       inputs:
@@ -75,11 +75,11 @@ spec:
               kind: ChaosEngine
               metadata:
                 name: orders-chaos
-                namespace: {{workflow.parameters.adminModeNamespace}}
+                namespace: {{workflowSpec.parameters.adminModeNamespace}}
               spec:
                 appinfo:
-                  appns: {{workflow.parameters.appNamespace}}
-                  applabel: "name={{workflow.parameters.appLabelOrders}}"
+                  appns: {{workflowSpec.parameters.appNamespace}}
+                  applabel: "name={{workflowSpec.parameters.appLabelOrders}}"
                   appkind: deployment
                 jobCleanUpPolicy: retain
                 monitoring: false
@@ -100,4 +100,4 @@ spec:
       container:
         image: lachlanevenson/k8s-kubectl
         command: [sh, -c]
-        args: ['kubectl apply -f /tmp/chaosengine-2.yaml -n {{workflow.parameters.adminModeNamespace}}']
+        args: ['kubectl apply -f /tmp/chaosengine-2.yaml -n {{workflowSpec.parameters.adminModeNamespace}}']
