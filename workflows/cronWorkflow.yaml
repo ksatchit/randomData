@@ -4,7 +4,7 @@ metadata:
   name: test-cron-wf
 spec:
   schedule: "*/5 * * * *"
-  concurrencyPolicy: "Replace"
+  concurrencyPolicy: "Forbid"
   startingDeadlineSeconds: 0
   workflowSpec:
     entrypoint: argowf-chaos
