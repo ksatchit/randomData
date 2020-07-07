@@ -1,0 +1,103 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: test-cron-wf
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: "Replace"
+  startingDeadlineSeconds: 0
+  workflowSpec:
+    entrypoint: whalesay
+    serviceAccountName: argo-chaos
+    arguments:
+    parameters:
+      - name: appNamespace
+        value: "sock-shop"
+      - name: adminModeNamespace
+        value: "litmus"
+      - name: appLabelCarts
+        value: "catalogue-db"
+      - name: appLabelOrders
+        value: "orders-db"
+    templates:
+    - name: argowf-chaos
+      steps:
+        - - name: run-catalogue-chaos
+            template: run-catalogue-chaos
+          - name: run-orders-chaos
+            template: run-orders-chaos
+    - name: run-catalogue-chaos
+      inputs:
+        artifacts:
+        - name: run-catalogue-chaos
+          path: /tmp/chaosengine-1.yaml
+          raw:
+            data: |
+              apiVersion: litmuschaos.io/v1alpha1
+              kind: ChaosEngine
+              metadata:
+                name: catalogue-chaos
+                namespace: {{workflow.parameters.adminModeNamespace}}
+              spec:
+                appinfo:
+                  appns: {{workflow.parameters.appNamespace}}
+                  applabel: "name={{workflow.parameters.appLabelCarts}}"
+                  appkind: deployment
+                jobCleanUpPolicy: retain
+                monitoring: false
+                annotationCheck: 'false'
+                engineState: 'active'
+                chaosServiceAccount: litmus-admin
+                experiments:
+                  - name: pod-cpu-hog
+                    spec:
+                      components:
+                        env:
+                          - name: TOTAL_CHAOS_DURATION
+                            value: "60"
+                          - name: TARGET_CONTAINER
+                            value: "catalogue-db"
+                          - name: CPU_CORES
+                            value: "1"
+      container:
+        image: lachlanevenson/k8s-kubectl
+        command: [sh, -c]
+        args: ['kubectl apply -f /tmp/chaosengine-1.yaml -n {{workflow.parameters.adminModeNamespace}}']
+
+    - name: run-orders-chaos
+      inputs:
+        artifacts:
+        - name: run-orders-chaos
+          path: /tmp/chaosengine-2.yaml
+          raw:
+            data: |
+              apiVersion: litmuschaos.io/v1alpha1
+              kind: ChaosEngine
+              metadata:
+                name: orders-chaos
+                namespace: {{workflow.parameters.adminModeNamespace}}
+              spec:
+                appinfo:
+                  appns: {{workflow.parameters.appNamespace}}
+                  applabel: "name={{workflow.parameters.appLabelOrders}}"
+                  appkind: deployment
+                jobCleanUpPolicy: retain
+                monitoring: false
+                annotationCheck: 'false'
+                engineState: 'active'
+                chaosServiceAccount: litmus-admin
+                experiments:
+                  - name: pod-cpu-hog
+                    spec:
+                      components:
+                        env:
+                          - name: TOTAL_CHAOS_DURATION
+                            value: "60"
+                          - name: TARGET_CONTAINER
+                            value: "orders-db"
+                          - name: CPU_CORES
+                            value: "1"
+      container:
+        image: lachlanevenson/k8s-kubectl
+        command: [sh, -c]
+        args: ['kubectl apply -f /tmp/chaosengine-2.yaml -n {{workflow.parameters.adminModeNamespace}}']
