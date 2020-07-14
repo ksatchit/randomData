@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: prometheus
+      name: prometheus
+    spec:
+      containers:
+      - args:
+        - -storage.local.retention=360h
+        - -storage.local.memory-chunks=1048576
+        - -config.file=/etc/prometheus/prometheus.yml
+        image: prom/prometheus:v1.5.2
+        imagePullPolicy: IfNotPresent
+        name: prometheus
+        ports:
+        - containerPort: 9090
+          name: web
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/prometheus
+          name: config-volume
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: prometheus
+      serviceAccountName: prometheus
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: prometheus-configmap
+        name: config-volume

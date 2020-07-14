@@ -9,4 +9,9 @@ data:
     }
 kind: ConfigMap
 metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"config.json":"{\n  \"sink\": \"http\",\n  \"httpSinkUrl\": \"http://localhost:8080\",\n  \"httpSinkBufferSize\": 1500,\n  \"httpSinkDiscardMessages\": true\n}"},"kind":"ConfigMap","metadata":{"annotations":{},"name":"litmus-eventrouter-http-cm","namespace":"litmus"}}
+  creationTimestamp: null
   name: litmus-eventrouter-http-cm
+  selfLink: /api/v1/namespaces/litmus/configmaps/litmus-eventrouter-http-cm
