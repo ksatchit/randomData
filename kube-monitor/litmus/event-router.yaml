@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: litmus-eventrouter
+  name: litmus-eventrouter
+  namespace: litmus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: litmus-eventrouter
+  template:
+    metadata:
+      labels:
+        app: litmus-eventrouter
+    spec:
+      containers:
+      - image: containership/eventrouter
+        imagePullPolicy: IfNotPresent
+        name: litmus-eventrouter
+        volumeMounts:
+        - mountPath: /etc/eventrouter
+          name: config-volume
+      serviceAccount: litmus
+      serviceAccountName: litmus
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: litmus-eventrouter-http-cm
+        name: config-volume
