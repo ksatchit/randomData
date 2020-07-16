@@ -94,7 +94,7 @@ spec:
                           - name: TOTAL_CHAOS_DURATION
                             value: "60"
                           - name: TARGET_CONTAINER
-                            value: "orders-db"
+                            value: "orders"
                           - name: MEMORY_CONSUMPTION
                             value: "500"
       container:
