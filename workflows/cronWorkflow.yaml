@@ -16,9 +16,9 @@ spec:
       - name: adminModeNamespace
         value: "litmus"
       - name: appLabelCarts
-        value: "catalogue-db"
+        value: "catalogue"
       - name: appLabelOrders
-        value: "orders-db"
+        value: "orders"
     templates:
     - name: argowf-chaos
       steps:
@@ -36,7 +36,7 @@ spec:
               apiVersion: litmuschaos.io/v1alpha1
               kind: ChaosEngine
               metadata:
-                name: catalogue-chaos
+                name: catalogue-cpu-hog
                 namespace: {{workflowSpec.parameters.adminModeNamespace}}
               spec:
                 appinfo:
@@ -44,7 +44,7 @@ spec:
                   applabel: "name={{workflowSpec.parameters.appLabelCarts}}"
                   appkind: deployment
                 jobCleanUpPolicy: retain
-                monitoring: false
+                monitoring: true
                 annotationCheck: 'false'
                 engineState: 'active'
                 chaosServiceAccount: litmus-admin
@@ -56,7 +56,7 @@ spec:
                           - name: TOTAL_CHAOS_DURATION
                             value: "60"
                           - name: TARGET_CONTAINER
-                            value: "catalogue-db"
+                            value: "catalogue"
                           - name: CPU_CORES
                             value: "1"
       container:
@@ -74,7 +74,7 @@ spec:
               apiVersion: litmuschaos.io/v1alpha1
               kind: ChaosEngine
               metadata:
-                name: orders-chaos
+                name: orders-memory-hog
                 namespace: {{workflowSpec.parameters.adminModeNamespace}}
               spec:
                 appinfo:
@@ -82,7 +82,7 @@ spec:
                   applabel: "name={{workflowSpec.parameters.appLabelOrders}}"
                   appkind: deployment
                 jobCleanUpPolicy: retain
-                monitoring: false
+                monitoring: true
                 annotationCheck: 'false'
                 engineState: 'active'
                 chaosServiceAccount: litmus-admin
@@ -95,8 +95,8 @@ spec:
                             value: "60"
                           - name: TARGET_CONTAINER
                             value: "orders-db"
-                          - name: CPU_CORES
-                            value: "1"
+                          - name: MEMORY_CONSUMPTION
+                            value: "500"
       container:
         image: lachlanevenson/k8s-kubectl
         command: [sh, -c]
