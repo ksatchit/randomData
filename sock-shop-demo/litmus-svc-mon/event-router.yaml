@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: litmus-event-router
+  labels:
+    k8s-app: litmus-eventrouter
+  namespace: litmus
+spec:
+  jobLabel: name
+  selector:
+    matchLabels:
+      name: litmus-eventrouter
+  namespaceSelector:
+    matchNames:
+    - litmus
+  endpoints:
+  - port: web
+    interval: 1s
