@@ -1,0 +1,368 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"carts"},"name":"carts","namespace":"sock-shop"},"spec":{"ports":[{"port":80,"targetPort":80}],"selector":{"name":"carts"}}}
+    creationTimestamp: 2020-07-16T10:16:56Z
+    labels:
+      name: carts
+    name: carts
+    namespace: sock-shop
+    resourceVersion: "10021412"
+    selfLink: /api/v1/namespaces/sock-shop/services/carts
+    uid: a77350f1-cc03-4920-b1a7-4cf7b4c36eea
+  spec:
+    clusterIP: 10.100.202.205
+    ports:
+    - name: web
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      name: carts
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"carts-db"},"name":"carts-db","namespace":"sock-shop"},"spec":{"ports":[{"port":27017,"targetPort":27017}],"selector":{"name":"carts-db"}}}
+    creationTimestamp: 2020-07-16T10:16:55Z
+    labels:
+      name: carts-db
+    name: carts-db
+    namespace: sock-shop
+    resourceVersion: "10021510"
+    selfLink: /api/v1/namespaces/sock-shop/services/carts-db
+    uid: 1b55ae52-51f3-400f-b8f2-d21b01a791f8
+  spec:
+    clusterIP: 10.100.220.204
+    ports:
+    - name: mongo
+      port: 27017
+      protocol: TCP
+      targetPort: 27017
+    selector:
+      name: carts-db
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"catalogue"},"name":"catalogue","namespace":"sock-shop"},"spec":{"ports":[{"port":80,"targetPort":80}],"selector":{"name":"catalogue"}}}
+    creationTimestamp: 2020-07-16T10:17:00Z
+    labels:
+      name: catalogue
+    name: catalogue
+    namespace: sock-shop
+    resourceVersion: "10021690"
+    selfLink: /api/v1/namespaces/sock-shop/services/catalogue
+    uid: 5c7bd92e-e041-418d-ac7e-94064e62468e
+  spec:
+    clusterIP: 10.100.61.193
+    ports:
+    - name: web
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      name: catalogue
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"catalogue-db"},"name":"catalogue-db","namespace":"sock-shop"},"spec":{"ports":[{"port":3306,"targetPort":3306}],"selector":{"name":"catalogue-db"}}}
+    creationTimestamp: 2020-07-16T10:16:58Z
+    labels:
+      name: catalogue-db
+    name: catalogue-db
+    namespace: sock-shop
+    resourceVersion: "10021760"
+    selfLink: /api/v1/namespaces/sock-shop/services/catalogue-db
+    uid: 3f150700-fd67-446e-aec8-71921a07b620
+  spec:
+    clusterIP: 10.100.13.123
+    ports:
+    - name: mysql
+      port: 3306
+      protocol: TCP
+      targetPort: 3306
+    selector:
+      name: catalogue-db
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"front-end"},"name":"front-end","namespace":"sock-shop"},"spec":{"ports":[{"nodePort":30001,"port":80,"targetPort":8079}],"selector":{"name":"front-end"},"type":"LoadBalancer"}}
+    creationTimestamp: 2020-07-16T10:17:02Z
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    labels:
+      name: front-end
+    name: front-end
+    namespace: sock-shop
+    resourceVersion: "10021965"
+    selfLink: /api/v1/namespaces/sock-shop/services/front-end
+    uid: 8d9ee4f9-c04c-46e9-9f8a-cde15fcad81a
+  spec:
+    clusterIP: 10.100.152.85
+    externalTrafficPolicy: Cluster
+    ports:
+    - name: web
+      nodePort: 30001
+      port: 80
+      protocol: TCP
+      targetPort: 8079
+    selector:
+      name: front-end
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - hostname: a8d9ee4f9c04c46e99f8acde15fcad81-888344280.us-east-2.elb.amazonaws.com
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"orders"},"name":"orders","namespace":"sock-shop"},"spec":{"ports":[{"port":80,"targetPort":80}],"selector":{"name":"orders"}}}
+    creationTimestamp: 2020-07-16T10:17:06Z
+    labels:
+      name: orders
+    name: orders
+    namespace: sock-shop
+    resourceVersion: "10022129"
+    selfLink: /api/v1/namespaces/sock-shop/services/orders
+    uid: 8a0cc034-2e73-4fa5-b9e4-c9540a86c130
+  spec:
+    clusterIP: 10.100.208.212
+    ports:
+    - name: web
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      name: orders
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"orders-db"},"name":"orders-db","namespace":"sock-shop"},"spec":{"ports":[{"port":27017,"targetPort":27017}],"selector":{"name":"orders-db"}}}
+    creationTimestamp: 2020-07-16T10:17:04Z
+    labels:
+      name: orders-db
+    name: orders-db
+    namespace: sock-shop
+    resourceVersion: "10022052"
+    selfLink: /api/v1/namespaces/sock-shop/services/orders-db
+    uid: 141e590a-b4b7-4373-a45c-e952205ede27
+  spec:
+    clusterIP: 10.100.220.98
+    ports:
+    - name: mongo
+      port: 27017
+      protocol: TCP
+      targetPort: 27017
+    selector:
+      name: orders-db
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"payment"},"name":"payment","namespace":"sock-shop"},"spec":{"ports":[{"port":80,"targetPort":80}],"selector":{"name":"payment"}}}
+    creationTimestamp: 2020-07-16T10:17:07Z
+    labels:
+      name: payment
+    name: payment
+    namespace: sock-shop
+    resourceVersion: "10022198"
+    selfLink: /api/v1/namespaces/sock-shop/services/payment
+    uid: 298f10ba-f4fe-4ac0-9ca4-d4ae0b726d44
+  spec:
+    clusterIP: 10.100.44.65
+    ports:
+    - name: web
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      name: payment
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"prometheus.io/path":"/prometheus"},"labels":{"name":"queue-master"},"name":"queue-master","namespace":"sock-shop"},"spec":{"ports":[{"port":80,"targetPort":80}],"selector":{"name":"queue-master"}}}
+      prometheus.io/path: /prometheus
+    creationTimestamp: 2020-07-16T10:17:09Z
+    labels:
+      name: queue-master
+    name: queue-master
+    namespace: sock-shop
+    resourceVersion: "10022298"
+    selfLink: /api/v1/namespaces/sock-shop/services/queue-master
+    uid: 120cd820-9576-482e-9a90-b529b67f61f3
+  spec:
+    clusterIP: 10.100.174.110
+    ports:
+    - name: web
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      name: queue-master
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"rabbitmq"},"name":"rabbitmq","namespace":"sock-shop"},"spec":{"ports":[{"name":"rabbitmq","port":5672,"targetPort":5672},{"name":"exporter","port":9090,"protocol":"TCP","targetPort":"exporter"}],"selector":{"name":"rabbitmq"}}}
+    creationTimestamp: 2020-07-16T10:17:10Z
+    labels:
+      name: rabbitmq
+    name: rabbitmq
+    namespace: sock-shop
+    resourceVersion: "1699010"
+    selfLink: /api/v1/namespaces/sock-shop/services/rabbitmq
+    uid: ecba64c3-274e-480d-8d2d-62049bda4ac8
+  spec:
+    clusterIP: 10.100.155.72
+    ports:
+    - name: rabbitmq
+      port: 5672
+      protocol: TCP
+      targetPort: 5672
+    - name: exporter
+      port: 9090
+      protocol: TCP
+      targetPort: exporter
+    selector:
+      name: rabbitmq
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"shipping"},"name":"shipping","namespace":"sock-shop"},"spec":{"ports":[{"port":80,"targetPort":80}],"selector":{"name":"shipping"}}}
+    creationTimestamp: 2020-07-16T10:17:12Z
+    labels:
+      name: shipping
+    name: shipping
+    namespace: sock-shop
+    resourceVersion: "10022454"
+    selfLink: /api/v1/namespaces/sock-shop/services/shipping
+    uid: fca53c6a-11c7-498f-8b1b-d5a60cbc60d7
+  spec:
+    clusterIP: 10.100.222.228
+    ports:
+    - name: web
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      name: shipping
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"user"},"name":"user","namespace":"sock-shop"},"spec":{"ports":[{"port":80,"targetPort":80}],"selector":{"name":"user"}}}
+    creationTimestamp: 2020-07-16T10:17:15Z
+    labels:
+      name: user
+    name: user
+    namespace: sock-shop
+    resourceVersion: "10022653"
+    selfLink: /api/v1/namespaces/sock-shop/services/user
+    uid: b9b28fed-dbc4-44f6-a170-61aa023c1e43
+  spec:
+    clusterIP: 10.100.210.101
+    ports:
+    - name: web
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      name: user
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"name":"user-db"},"name":"user-db","namespace":"sock-shop"},"spec":{"ports":[{"port":27017,"targetPort":27017}],"selector":{"name":"user-db"}}}
+    creationTimestamp: 2020-07-16T10:17:13Z
+    labels:
+      name: user-db
+    name: user-db
+    namespace: sock-shop
+    resourceVersion: "10022530"
+    selfLink: /api/v1/namespaces/sock-shop/services/user-db
+    uid: 655a468c-b7d4-4f18-8127-aa607457a935
+  spec:
+    clusterIP: 10.100.126.119
+    ports:
+    - name: mongo
+      port: 27017
+      protocol: TCP
+      targetPort: 27017
+    selector:
+      name: user-db
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

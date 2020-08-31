@@ -1,0 +1,1349 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"carts"},"name":"carts","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"carts"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"carts"}},"spec":{"containers":[{"env":[{"name":"ZIPKIN","value":"zipkin.jaeger.svc.cluster.local"},{"name":"JAVA_OPTS","value":"-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom"}],"image":"weaveworksdemos/carts:0.4.8","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":300,"periodSeconds":3},"name":"carts","ports":[{"containerPort":80,"protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":180,"periodSeconds":3},"securityContext":{"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["all"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001},"volumeMounts":[{"mountPath":"/tmp","name":"tmp-volume"}]}],"volumes":[{"emptyDir":{"medium":"Memory"},"name":"tmp-volume"}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:16:56Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: carts
+    name: carts
+    namespace: sock-shop
+    resourceVersion: "7658794"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/carts
+    uid: 756c8cc2-c568-450e-932e-d103431faa97
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: carts
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: carts
+      spec:
+        containers:
+        - env:
+          - name: ZIPKIN
+            value: zipkin.jaeger.svc.cluster.local
+          - name: JAVA_OPTS
+            value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC
+              -Djava.security.egd=file:/dev/urandom
+          image: weaveworksdemos/carts:0.4.8
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 300
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: carts
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 180
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - NET_BIND_SERVICE
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            medium: Memory
+          name: tmp-volume
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:16:56Z
+      lastUpdateTime: 2020-07-16T10:20:01Z
+      message: ReplicaSet "carts-754c96bf74" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-18T13:23:41Z
+      lastUpdateTime: 2020-08-18T13:23:41Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"carts-db"},"name":"carts-db","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"carts-db"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"carts-db"}},"spec":{"containers":[{"image":"mongo","imagePullPolicy":"Always","name":"carts-db","ports":[{"containerPort":27017,"name":"mongo","protocol":"TCP"}],"resources":{"limits":{"ephemeral-storage":"2Gi"},"requests":{"ephemeral-storage":"1Gi"}},"securityContext":{"capabilities":{"add":["CHOWN","SETGID","SETUID"],"drop":["all"]},"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/tmp","name":"tmp-volume"}]}],"volumes":[{"emptyDir":{"medium":"Memory"},"name":"tmp-volume"}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:16:54Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: carts-db
+    name: carts-db
+    namespace: sock-shop
+    resourceVersion: "4577491"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/carts-db
+    uid: eed7251e-143f-47ef-83c4-e1a95b4bdf20
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: carts-db
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: carts-db
+      spec:
+        containers:
+        - image: mongo
+          imagePullPolicy: Always
+          name: carts-db
+          ports:
+          - containerPort: 27017
+            name: mongo
+            protocol: TCP
+          resources:
+            limits:
+              ephemeral-storage: 2Gi
+            requests:
+              ephemeral-storage: 1Gi
+          securityContext:
+            capabilities:
+              add:
+              - CHOWN
+              - SETGID
+              - SETUID
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            medium: Memory
+          name: tmp-volume
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:16:54Z
+      lastUpdateTime: 2020-07-16T10:16:56Z
+      message: ReplicaSet "carts-db-69f74c65bd" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-02T12:48:18Z
+      lastUpdateTime: 2020-08-02T12:48:18Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"catalogue"},"name":"catalogue","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"catalogue"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"catalogue"}},"spec":{"containers":[{"image":"weaveworksdemos/catalogue:0.3.5","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":300,"periodSeconds":3},"name":"catalogue","ports":[{"containerPort":80,"protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":180,"periodSeconds":3},"resources":{},"securityContext":{"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["all"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001}}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:16:59Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: catalogue
+    name: catalogue
+    namespace: sock-shop
+    resourceVersion: "4577814"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/catalogue
+    uid: e7207e8c-5d0c-4431-964c-bc1f629e2bff
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: catalogue
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: catalogue
+      spec:
+        containers:
+        - image: weaveworksdemos/catalogue:0.3.5
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 300
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: catalogue
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 180
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - NET_BIND_SERVICE
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:16:59Z
+      lastUpdateTime: 2020-07-16T10:20:05Z
+      message: ReplicaSet "catalogue-67f86d6587" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-02T12:50:47Z
+      lastUpdateTime: 2020-08-02T12:50:47Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"catalogue-db"},"name":"catalogue-db","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"catalogue-db"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"catalogue-db"}},"spec":{"containers":[{"env":[{"name":"MYSQL_ROOT_PASSWORD","value":"fake_password"},{"name":"MYSQL_DATABASE","value":"socksdb"}],"image":"weaveworksdemos/catalogue-db:0.3.0","imagePullPolicy":"IfNotPresent","name":"catalogue-db","ports":[{"containerPort":3306,"name":"mysql","protocol":"TCP"}]}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:16:57Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: catalogue-db
+    name: catalogue-db
+    namespace: sock-shop
+    resourceVersion: "4577482"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/catalogue-db
+    uid: e3d7d71d-e706-4a1c-ade9-97ba77ada1d3
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: catalogue-db
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: catalogue-db
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_ROOT_PASSWORD
+            value: fake_password
+          - name: MYSQL_DATABASE
+            value: socksdb
+          image: weaveworksdemos/catalogue-db:0.3.0
+          imagePullPolicy: IfNotPresent
+          name: catalogue-db
+          ports:
+          - containerPort: 3306
+            name: mysql
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:16:57Z
+      lastUpdateTime: 2020-07-16T10:17:00Z
+      message: ReplicaSet "catalogue-db-66bc8df878" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-02T12:48:16Z
+      lastUpdateTime: 2020-08-02T12:48:16Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"front-end"},"name":"front-end","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"front-end"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"front-end"}},"spec":{"containers":[{"image":"weaveworksdemos/front-end:0.3.12","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/","port":8079},"initialDelaySeconds":300,"periodSeconds":3},"name":"front-end","ports":[{"containerPort":8079,"protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/","port":8079},"initialDelaySeconds":30,"periodSeconds":3},"resources":{"requests":{"cpu":"100m","memory":"100Mi"}},"securityContext":{"capabilities":{"drop":["all"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001}}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:17:01Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: front-end
+    name: front-end
+    namespace: sock-shop
+    resourceVersion: "7415835"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/front-end
+    uid: 38603dbb-88c9-4204-8e6b-af428612f295
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: front-end
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: front-end
+      spec:
+        containers:
+        - image: weaveworksdemos/front-end:0.3.12
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8079
+              scheme: HTTP
+            initialDelaySeconds: 300
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: front-end
+          ports:
+          - containerPort: 8079
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8079
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          securityContext:
+            capabilities:
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:01Z
+      lastUpdateTime: 2020-07-16T10:17:34Z
+      message: ReplicaSet "front-end-5d96ff485b" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-17T07:06:59Z
+      lastUpdateTime: 2020-08-17T07:06:59Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"orders"},"name":"orders","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"orders"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"orders"}},"spec":{"containers":[{"env":[{"name":"ZIPKIN","value":"zipkin.jaeger.svc.cluster.local"},{"name":"JAVA_OPTS","value":"-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom"}],"image":"weaveworksdemos/orders:0.4.7","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":300,"periodSeconds":3},"name":"orders","ports":[{"containerPort":80,"protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":180,"periodSeconds":3},"resources":{},"securityContext":{"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["all"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001},"volumeMounts":[{"mountPath":"/tmp","name":"tmp-volume"}]}],"volumes":[{"emptyDir":{"medium":"Memory"},"name":"tmp-volume"}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:17:05Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: orders
+    name: orders
+    namespace: sock-shop
+    resourceVersion: "4577820"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/orders
+    uid: ece0076f-8760-4ec6-a3b4-b536f3f2caf3
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: orders
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: orders
+      spec:
+        containers:
+        - env:
+          - name: ZIPKIN
+            value: zipkin.jaeger.svc.cluster.local
+          - name: JAVA_OPTS
+            value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC
+              -Djava.security.egd=file:/dev/urandom
+          image: weaveworksdemos/orders:0.4.7
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 300
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: orders
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 180
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - NET_BIND_SERVICE
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            medium: Memory
+          name: tmp-volume
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:05Z
+      lastUpdateTime: 2020-07-16T10:20:09Z
+      message: ReplicaSet "orders-67dbccdfdf" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-02T12:50:49Z
+      lastUpdateTime: 2020-08-02T12:50:49Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"orders-db"},"name":"orders-db","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"orders-db"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"orders-db"}},"spec":{"containers":[{"image":"mongo","imagePullPolicy":"Always","name":"orders-db","ports":[{"containerPort":27017,"name":"mongo","protocol":"TCP"}],"resources":{},"securityContext":{"capabilities":{"add":["CHOWN","SETGID","SETUID"],"drop":["all"]},"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/tmp","name":"tmp-volume"}]}],"volumes":[{"emptyDir":{"medium":"Memory"},"name":"tmp-volume"}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:17:03Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: orders-db
+    name: orders-db
+    namespace: sock-shop
+    resourceVersion: "4577367"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/orders-db
+    uid: 3b382167-3e9b-4492-ad2d-fc0f7315c691
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: orders-db
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: orders-db
+      spec:
+        containers:
+        - image: mongo
+          imagePullPolicy: Always
+          name: orders-db
+          ports:
+          - containerPort: 27017
+            name: mongo
+            protocol: TCP
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - CHOWN
+              - SETGID
+              - SETUID
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            medium: Memory
+          name: tmp-volume
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:03Z
+      lastUpdateTime: 2020-07-16T10:17:05Z
+      message: ReplicaSet "orders-db-79c689d8c7" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-02T12:47:49Z
+      lastUpdateTime: 2020-08-02T12:47:49Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"payment"},"name":"payment","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"payment"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"payment"}},"spec":{"containers":[{"image":"weaveworksdemos/payment:0.4.3","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":300,"periodSeconds":3},"name":"payment","ports":[{"containerPort":80,"protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":180,"periodSeconds":3},"securityContext":{"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["all"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001}}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:17:06Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: payment
+    name: payment
+    namespace: sock-shop
+    resourceVersion: "4577811"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/payment
+    uid: 5c2073f8-1ab1-4f91-9208-3b7be6d32802
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: payment
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: payment
+      spec:
+        containers:
+        - image: weaveworksdemos/payment:0.4.3
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 300
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: payment
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 180
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - NET_BIND_SERVICE
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:06Z
+      lastUpdateTime: 2020-07-16T10:20:10Z
+      message: ReplicaSet "payment-6787495757" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-02T12:50:47Z
+      lastUpdateTime: 2020-08-02T12:50:47Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"queue-master"},"name":"queue-master","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"queue-master"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"queue-master"}},"spec":{"containers":[{"image":"weaveworksdemos/queue-master:0.3.1","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":300,"periodSeconds":3},"name":"queue-master","ports":[{"containerPort":80,"protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":180,"periodSeconds":3}}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:17:08Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: queue-master
+    name: queue-master
+    namespace: sock-shop
+    resourceVersion: "7478295"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/queue-master
+    uid: c994f924-dd5c-45da-9a0d-afd562d1285a
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: queue-master
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: queue-master
+      spec:
+        containers:
+        - image: weaveworksdemos/queue-master:0.3.1
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 300
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: queue-master
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 180
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:08Z
+      lastUpdateTime: 2020-07-16T10:20:11Z
+      message: ReplicaSet "queue-master-67478795b7" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-17T14:54:18Z
+      lastUpdateTime: 2020-08-17T14:54:18Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"rabbitmq"},"name":"rabbitmq","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"rabbitmq"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"rabbitmq"}},"spec":{"containers":[{"image":"rabbitmq:3.6.8","imagePullPolicy":"IfNotPresent","name":"rabbitmq","ports":[{"containerPort":5672,"protocol":"TCP"}],"resources":{},"securityContext":{"capabilities":{"add":["CHOWN","SETGID","SETUID","DAC_OVERRIDE"],"drop":["all"]},"readOnlyRootFilesystem":true}}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:17:09Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: rabbitmq
+    name: rabbitmq
+    namespace: sock-shop
+    resourceVersion: "7709011"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/rabbitmq
+    uid: 720090ca-1d8e-46a1-89f2-18123872a712
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: rabbitmq
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: rabbitmq
+      spec:
+        containers:
+        - image: rabbitmq:3.6.8
+          imagePullPolicy: IfNotPresent
+          name: rabbitmq
+          ports:
+          - containerPort: 5672
+            protocol: TCP
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - CHOWN
+              - SETGID
+              - SETUID
+              - DAC_OVERRIDE
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:09Z
+      lastUpdateTime: 2020-07-16T10:17:25Z
+      message: ReplicaSet "rabbitmq-c8fcd79c9" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-18T19:39:58Z
+      lastUpdateTime: 2020-08-18T19:39:58Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"shipping"},"name":"shipping","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"shipping"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"shipping"}},"spec":{"containers":[{"env":[{"name":"ZIPKIN","value":"zipkin.jaeger.svc.cluster.local"},{"name":"JAVA_OPTS","value":"-Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom"}],"image":"weaveworksdemos/shipping:0.4.8","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":300,"periodSeconds":3},"name":"shipping","ports":[{"containerPort":80,"protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":180,"periodSeconds":3},"resources":{},"securityContext":{"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["all"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001},"volumeMounts":[{"mountPath":"/tmp","name":"tmp-volume"}]}],"volumes":[{"emptyDir":{"medium":"Memory"},"name":"tmp-volume"}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:17:11Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: shipping
+    name: shipping
+    namespace: sock-shop
+    resourceVersion: "4577827"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/shipping
+    uid: 50a13d37-e941-44f5-999e-5088ac2161a4
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: shipping
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: shipping
+      spec:
+        containers:
+        - env:
+          - name: ZIPKIN
+            value: zipkin.jaeger.svc.cluster.local
+          - name: JAVA_OPTS
+            value: -Xms64m -Xmx128m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC
+              -Djava.security.egd=file:/dev/urandom
+          image: weaveworksdemos/shipping:0.4.8
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 300
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: shipping
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 180
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - NET_BIND_SERVICE
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            medium: Memory
+          name: tmp-volume
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:11Z
+      lastUpdateTime: 2020-07-16T10:20:13Z
+      message: ReplicaSet "shipping-d49997689" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-02T12:50:51Z
+      lastUpdateTime: 2020-08-02T12:50:51Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"user"},"name":"user","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"user"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"user"}},"spec":{"containers":[{"env":[{"name":"MONGO_HOST","value":"user-db:27017"}],"image":"weaveworksdemos/user:0.4.7","imagePullPolicy":"IfNotPresent","livenessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":300,"periodSeconds":3},"name":"user","ports":[{"containerPort":80,"protocol":"TCP"}],"readinessProbe":{"httpGet":{"path":"/health","port":80},"initialDelaySeconds":180,"periodSeconds":3},"securityContext":{"capabilities":{"add":["NET_BIND_SERVICE"],"drop":["all"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001}}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:17:15Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: user
+    name: user
+    namespace: sock-shop
+    resourceVersion: "4577806"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/user
+    uid: e92f7e2f-bf6a-4898-8615-92c2260b4a8a
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: user
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: user
+      spec:
+        containers:
+        - env:
+          - name: MONGO_HOST
+            value: user-db:27017
+          image: weaveworksdemos/user:0.4.7
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 300
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: user
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 180
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - NET_BIND_SERVICE
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:15Z
+      lastUpdateTime: 2020-07-16T10:20:20Z
+      message: ReplicaSet "user-7498444df6" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-02T12:50:47Z
+      lastUpdateTime: 2020-08-02T12:50:47Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{"litmuschaos.io/chaos":"true"},"labels":{"app":"sock-shop","name":"user-db"},"name":"user-db","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sock-shop","name":"user-db"}},"template":{"metadata":{"labels":{"app":"sock-shop","name":"user-db"}},"spec":{"containers":[{"image":"weaveworksdemos/user-db:0.4.0","imagePullPolicy":"IfNotPresent","name":"user-db","ports":[{"containerPort":27017,"name":"mongo","protocol":"TCP"}],"resources":{},"securityContext":{"capabilities":{"add":["CHOWN","SETGID","SETUID"],"drop":["all"]},"readOnlyRootFilesystem":true},"volumeMounts":[{"mountPath":"/tmp","name":"tmp-volume"}]}],"volumes":[{"emptyDir":{"medium":"Memory"},"name":"tmp-volume"}]}}}}
+      litmuschaos.io/chaos: "true"
+    creationTimestamp: 2020-07-16T10:17:12Z
+    generation: 1
+    labels:
+      app: sock-shop
+      name: user-db
+    name: user-db
+    namespace: sock-shop
+    resourceVersion: "4577293"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/user-db
+    uid: f1a92e22-f3f7-47dd-bde2-2fd62339db75
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: sock-shop
+        name: user-db
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: sock-shop
+          name: user-db
+      spec:
+        containers:
+        - image: weaveworksdemos/user-db:0.4.0
+          imagePullPolicy: IfNotPresent
+          name: user-db
+          ports:
+          - containerPort: 27017
+            name: mongo
+            protocol: TCP
+          resources: {}
+          securityContext:
+            capabilities:
+              add:
+              - CHOWN
+              - SETGID
+              - SETUID
+              drop:
+              - all
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp
+            name: tmp-volume
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir:
+            medium: Memory
+          name: tmp-volume
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:12Z
+      lastUpdateTime: 2020-07-16T10:17:19Z
+      message: ReplicaSet "user-db-64b9d4f4d" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-02T12:47:46Z
+      lastUpdateTime: 2020-08-02T12:47:46Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"name":"user-load"},"name":"user-load","namespace":"sock-shop"},"spec":{"replicas":1,"selector":{"matchLabels":{"name":"user-load"}},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"user-load"}},"spec":{"containers":[{"args":["-h","front-end:80","-r","9999999"],"image":"weaveworksdemos/load-test","imagePullPolicy":"Always","name":"user-load"}]}}}}
+    creationTimestamp: 2020-07-16T10:17:14Z
+    generation: 1
+    labels:
+      name: user-load
+    name: user-load
+    namespace: sock-shop
+    resourceVersion: "9592171"
+    selfLink: /apis/apps/v1/namespaces/sock-shop/deployments/user-load
+    uid: f8ca054c-c8ad-4142-b477-fe96ec7ff971
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        name: user-load
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          name: user-load
+      spec:
+        containers:
+        - args:
+          - -h
+          - front-end:80
+          - -r
+          - "9999999"
+          image: weaveworksdemos/load-test
+          imagePullPolicy: Always
+          name: user-load
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: 2020-07-16T10:17:14Z
+      lastUpdateTime: 2020-07-16T10:17:18Z
+      message: ReplicaSet "user-load-dc4586796" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: 2020-08-28T17:39:02Z
+      lastUpdateTime: 2020-08-28T17:39:02Z
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
