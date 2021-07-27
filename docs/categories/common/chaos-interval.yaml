@@ -1,0 +1,26 @@
+# defines delay between each successive iteration of the chaos
+# supported in [pod-delete, container-kill, aws-experiments, gcp-experiment, aws-experiment, 
+# -- kafka-pod-delete, cassandra-pod-delete] experiments
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: engine-nginx
+spec:
+  engineState: "active"
+  annotationCheck: "false"
+  appinfo:
+    appns: "default"
+    applabel: "app=nginx"
+    appkind: "deployment"
+  chaosServiceAccount: pod-delete-sa
+  experiments:
+  - name: pod-delete
+    spec:
+      components:
+        env:
+        # delay between each iteration of chaos
+        - name: CHAOS_INTERVAL
+          value: '15'
+        # time duration for the chaos execution
+        - name: TOTAL_CHAOS_DURATION
+          VALUE: '60'
