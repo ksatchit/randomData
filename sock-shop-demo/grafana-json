@@ -1,0 +1,1936 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      },
+      {
+        "datasource": "Prometheus",
+        "enable": true,
+        "expr": "litmuschaos_awaited_experiments{chaosresult_namespace=\"litmus\",endpoint=\"tcp\",job=\"chaos-exporter\",namespace=\"litmus\",service=\"chaos-exporter\"}",
+        "hide": false,
+        "iconColor": "dark-red",
+        "name": "LitmusChaos",
+        "showIn": 0,
+        "step": "5s",
+        "tagKeys": "",
+        "textFormat": "",
+        "titleFormat": "",
+        "useValueForTime": false
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 5,
+  "iteration": 1630446587925,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": true,
+      "datasource": "DS_PROMETHEUS",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 25,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 34
+          },
+          "hiddenSeries": false,
+          "id": 11,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"user\",status_code=~\"2..\",route!=\"metrics\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "2xx",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"user\",status_code=~\"4.+|5.+\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "4xx/5xx",
+              "refId": "B",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "User QPS",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": "QPS (1 min)",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 34
+          },
+          "hiddenSeries": false,
+          "id": 12,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(request_duration_seconds_bucket{job=\"user\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "99th quantile",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "histogram_quantile(0.5, sum(rate(request_duration_seconds_bucket{job=\"user\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "50th quantile",
+              "refId": "B",
+              "step": 10
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_sum{job=\"user\"}[1m])) / sum(rate(request_duration_seconds_count{job=\"user\"}[1m]))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "Mean",
+              "refId": "C",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "User latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "title": "User Metrics",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "DS_PROMETHEUS",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 27,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 7
+          },
+          "hiddenSeries": false,
+          "id": 3,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"carts\",status_code=~\"2..\",route!=\"metrics\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "2xx",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"carts\",status_code=~\"4.+|5.+\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "4xx/5xx",
+              "refId": "B",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Cart QPS",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": "QPS (1 min)",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 7
+          },
+          "hiddenSeries": false,
+          "id": 4,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(request_duration_seconds_bucket{job=\"carts\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "99th quantile",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "histogram_quantile(0.5, sum(rate(request_duration_seconds_bucket{job=\"carts\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "50th quantile",
+              "refId": "B",
+              "step": 10
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_sum{job=\"carts\"}[1m])) / sum(rate(request_duration_seconds_count{job=\"carts\"}[1m]))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "Mean",
+              "refId": "C",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Cart latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "title": "Cart Metrics",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "DS_PROMETHEUS",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 22,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 9
+          },
+          "hiddenSeries": false,
+          "id": 1,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "hideEmpty": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": false,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "$$hashKey": "object:414",
+              "alias": "2xx",
+              "lines": true
+            },
+            {
+              "$$hashKey": "object:415",
+              "alias": "catalogue-pod-cpu-hog",
+              "color": "#C4162A",
+              "fillGradient": 7,
+              "lines": true,
+              "steppedLine": true,
+              "yaxis": 2
+            },
+            {
+              "$$hashKey": "object:525",
+              "alias": "catalogue-node-cpu-hog",
+              "color": "#C4162A",
+              "fillGradient": 7,
+              "lines": true,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"catalogue\",status_code=~\"2..\",route!=\"metrics\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "2xx",
+              "refId": "A",
+              "step": 2
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"catalogue\",status_code=~\"4.+|5.+\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "4xx/5xx",
+              "refId": "B",
+              "step": 2
+            },
+            {
+              "expr": "litmuschaos_experiment_chaos_injected_time{chaosresult_name=\"catalogue-pod-cpu-hog-pod-cpu-hog\",chaosresult_namespace=\"kubera\"} - on () (litmuschaos_experiment_end_time{chaosresult_name=\"catalogue-pod-cpu-hog-pod-cpu-hog\",chaosresult_namespace=\"kubera\"} OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "catalogue-pod-cpu-hog",
+              "refId": "C"
+            },
+            {
+              "expr": "litmuschaos_experiment_chaos_injected_time{chaosresult_name=\"catalogue-node-cpu-hog-node-cpu-hog\",chaosresult_namespace=\"kubera\"} - on () (litmuschaos_experiment_end_time{chaosresult_name=\"catalogue-node-cpu-hog-node-cpu-hog\",chaosresult_namespace=\"kubera\"} OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "catalogue-node-cpu-hog",
+              "refId": "E"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Catalogue QPS",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:442",
+              "format": "ops",
+              "label": "QPS (1 min)",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:443",
+              "decimals": null,
+              "format": "short",
+              "label": "CHAOS",
+              "logBase": 2,
+              "max": "1",
+              "min": "0",
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 9
+          },
+          "hiddenSeries": false,
+          "id": 2,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "$$hashKey": "object:959",
+              "alias": "99th quantile",
+              "lines": true
+            },
+            {
+              "$$hashKey": "object:960",
+              "alias": "50th quantile",
+              "lines": true
+            },
+            {
+              "$$hashKey": "object:961",
+              "alias": "Mean",
+              "lines": true
+            },
+            {
+              "$$hashKey": "object:962",
+              "alias": "catalogue-pod-cpu-hog",
+              "color": "#C4162A",
+              "fillGradient": 7,
+              "lines": true,
+              "steppedLine": true,
+              "yaxis": 2
+            },
+            {
+              "$$hashKey": "object:1053",
+              "alias": "catalogue-node-cpu-hog",
+              "color": "#C4162A",
+              "fillGradient": 7,
+              "lines": true,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(request_duration_seconds_bucket{job=\"catalogue\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "99th quantile",
+              "refId": "A",
+              "step": 2
+            },
+            {
+              "expr": "histogram_quantile(0.5, sum(rate(request_duration_seconds_bucket{job=\"catalogue\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "50th quantile",
+              "refId": "B",
+              "step": 2
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_sum{job=\"catalogue\"}[1m])) / sum(rate(request_duration_seconds_count{job=\"catalogue\"}[1m]))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "Mean",
+              "refId": "C",
+              "step": 2
+            },
+            {
+              "expr": "litmuschaos_experiment_chaos_injected_time{chaosresult_name=\"catalogue-pod-cpu-hog-pod-cpu-hog\",chaosresult_namespace=\"kubera\"} - on () (litmuschaos_experiment_end_time{chaosresult_name=\"catalogue-pod-cpu-hog-pod-cpu-hog\",chaosresult_namespace=\"kubera\"} OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "catalogue-pod-cpu-hog",
+              "refId": "D"
+            },
+            {
+              "expr": "litmuschaos_experiment_chaos_injected_time{chaosresult_name=\"catalogue-node-cpu-hog-node-cpu-hog\",chaosresult_namespace=\"kubera\"} - on () (litmuschaos_experiment_end_time{chaosresult_name=\"catalogue-node-cpu-hog-node-cpu-hog\",chaosresult_namespace=\"kubera\"} OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "catalogue-node-cpu-hog",
+              "refId": "F"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Catalogue latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:1001",
+              "format": "s",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:1002",
+              "format": "short",
+              "label": "CHAOS",
+              "logBase": 2,
+              "max": "1",
+              "min": "0",
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "title": "Catalogue Metrics",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "DS_PROMETHEUS",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 26,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 6
+          },
+          "hiddenSeries": false,
+          "id": 13,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"front-end\",status_code=~\"2..\",route!=\"metrics\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "2xx",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"front-end\",status_code=~\"4.+|5.+\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "4xx/5xx",
+              "refId": "B",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Frontend QPS",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": "QPS (1 min)",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 6
+          },
+          "hiddenSeries": false,
+          "id": 14,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(request_duration_seconds_bucket{job=\"front-end\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "99th quantile",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "histogram_quantile(0.5, sum(rate(request_duration_seconds_bucket{job=\"front-end\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "50th quantile",
+              "refId": "B",
+              "step": 10
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_sum{job=\"front-end\"}[1m])) / sum(rate(request_duration_seconds_count{job=\"front-end\"}[1m]))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "Mean",
+              "refId": "C",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Frontend latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "title": "Frontend Metrics",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "DS_PROMETHEUS",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 21,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 1
+          },
+          "hiddenSeries": false,
+          "id": 5,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "$$hashKey": "object:123",
+              "alias": "2xx",
+              "lines": true
+            },
+            {
+              "$$hashKey": "object:272",
+              "alias": "orders-pod-memory-hog",
+              "color": "#C4162A",
+              "fillGradient": 7,
+              "steppedLine": true,
+              "yaxis": 2
+            },
+            {
+              "$$hashKey": "object:282",
+              "alias": "orders-node-memory-hog",
+              "color": "#C4162A",
+              "fillGradient": 7,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(rate(request_duration_seconds_count{job=\"orders\",status_code=~\"2..\",route!=\"metrics\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "2xx",
+              "refId": "A",
+              "step": 2
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"orders\",status_code=~\"4.+|5.+\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "4xx/5xx",
+              "refId": "B",
+              "step": 2
+            },
+            {
+              "expr": "litmuschaos_experiment_chaos_injected_time{chaosresult_name=\"orders-pod-memory-hog-pod-memory-hog\",chaosresult_namespace=\"kubera\"} - on () (litmuschaos_experiment_end_time{chaosresult_name=\"orders-pod-memory-hog-pod-memory-hog\",chaosresult_namespace=\"kubera\"} OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "orders-pod-memory-hog",
+              "refId": "D"
+            },
+            {
+              "expr": "litmuschaos_experiment_chaos_injected_time{chaosresult_name=\"orders-node-memory-hog-node-memory-hog\",chaosresult_namespace=\"kubera\"} - on () (litmuschaos_experiment_end_time{chaosresult_name=\"orders-node-memory-hog-node-memory-hog\",chaosresult_namespace=\"kubera\"} OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "orders-node-memory-hog",
+              "refId": "F"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Orders QPS",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:149",
+              "format": "ops",
+              "label": "QPS (1 min)",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:150",
+              "decimals": null,
+              "format": "short",
+              "label": "CHAOS",
+              "logBase": 2,
+              "max": "1",
+              "min": "0",
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 1
+          },
+          "hiddenSeries": false,
+          "id": 6,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "$$hashKey": "object:115",
+              "alias": "99th quantile",
+              "lines": true
+            },
+            {
+              "$$hashKey": "object:116",
+              "alias": "50th quantile",
+              "lines": true
+            },
+            {
+              "$$hashKey": "object:117",
+              "alias": "Mean",
+              "lines": true
+            },
+            {
+              "$$hashKey": "object:183",
+              "alias": "orders-pod-memory-hog",
+              "color": "#C4162A",
+              "fillGradient": 7,
+              "steppedLine": true,
+              "yaxis": 2
+            },
+            {
+              "$$hashKey": "object:193",
+              "alias": "orders-node-memory-hog",
+              "color": "#C4162A",
+              "fillGradient": 7,
+              "steppedLine": true,
+              "yaxis": 2
+            }
+          ],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(request_duration_seconds_bucket{job=\"orders\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "99th quantile",
+              "refId": "A",
+              "step": 2
+            },
+            {
+              "expr": "histogram_quantile(0.5, sum(rate(request_duration_seconds_bucket{job=\"orders\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "50th quantile",
+              "refId": "B",
+              "step": 2
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_sum{job=\"orders\"}[1m])) / sum(rate(request_duration_seconds_count{job=\"orders\"}[1m]))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "Mean",
+              "refId": "C",
+              "step": 2
+            },
+            {
+              "expr": "litmuschaos_experiment_chaos_injected_time{chaosresult_name=\"orders-pod-memory-hog-pod-memory-hog\",chaosresult_namespace=\"kubera\"} - on () (litmuschaos_experiment_end_time{chaosresult_name=\"orders-pod-memory-hog-pod-memory-hog\",chaosresult_namespace=\"kubera\"} OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "orders-pod-memory-hog",
+              "refId": "E"
+            },
+            {
+              "expr": "litmuschaos_experiment_chaos_injected_time{chaosresult_name=\"orders-node-memory-hog-node-memory-hog\",chaosresult_namespace=\"kubera\"} - on () (litmuschaos_experiment_end_time{chaosresult_name=\"orders-node-memory-hog-node-memory-hog\",chaosresult_namespace=\"kubera\"} OR on() vector(0))",
+              "interval": "",
+              "legendFormat": "orders-node-memory-hog",
+              "refId": "G"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Orders latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:155",
+              "format": "s",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:156",
+              "format": "short",
+              "label": "CHAOS",
+              "logBase": 2,
+              "max": "1",
+              "min": "0",
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "title": "Orders Metrics",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "DS_PROMETHEUS",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 23,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 18
+          },
+          "hiddenSeries": false,
+          "id": 7,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"payment\",status_code=~\"2..\",route!=\"metrics\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "2xx",
+              "refId": "A",
+              "step": 2
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"payment\",status_code=~\"4.+|5.+\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "4xx/5xx",
+              "refId": "B",
+              "step": 2
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Payment QPS",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:1295",
+              "format": "ops",
+              "label": "QPS (1 min)",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:1296",
+              "format": "short",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 18
+          },
+          "hiddenSeries": false,
+          "id": 8,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(request_duration_seconds_bucket{job=\"payment\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "99th quantile",
+              "refId": "A",
+              "step": 2
+            },
+            {
+              "expr": "histogram_quantile(0.5, sum(rate(request_duration_seconds_bucket{job=\"payment\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "50th quantile",
+              "refId": "B",
+              "step": 2
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_sum{job=\"payment\"}[1m])) / sum(rate(request_duration_seconds_count{job=\"payment\"}[1m]))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "Mean",
+              "refId": "C",
+              "step": 2
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Payment latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "title": "Payement Metrics",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "DS_PROMETHEUS",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 24,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 26
+          },
+          "hiddenSeries": false,
+          "id": 9,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"shipping\",status_code=~\"2..\",route!=\"metrics\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "2xx",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_count{job=\"shipping\",status_code=~\"4.+|5.+\"}[1m])) * 100",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "4xx/5xx",
+              "refId": "B",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Shipping QPS",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:1578",
+              "format": "ops",
+              "label": "QPS (1 min)",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:1579",
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "DS_PROMETHEUS",
+          "fieldConfig": {
+            "defaults": {
+              "links": []
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 26
+          },
+          "hiddenSeries": false,
+          "id": 10,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "8.1.2",
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.99, sum(rate(request_duration_seconds_bucket{job=\"shipping\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "99th quantile",
+              "refId": "A",
+              "step": 10
+            },
+            {
+              "expr": "histogram_quantile(0.5, sum(rate(request_duration_seconds_bucket{job=\"shipping\"}[1m])) by (name, le))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "50th quantile",
+              "refId": "B",
+              "step": 10
+            },
+            {
+              "expr": "sum(rate(request_duration_seconds_sum{job=\"shipping\"}[1m])) / sum(rate(request_duration_seconds_count{job=\"shipping\"}[1m]))",
+              "interval": "",
+              "intervalFactor": 2,
+              "legendFormat": "Mean",
+              "refId": "C",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Shipping latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "logBase": 1,
+              "min": 0,
+              "show": true
+            },
+            {
+              "format": "short",
+              "logBase": 1,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "repeat": null,
+      "title": "Shipping Metrics",
+      "type": "row"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "datasource": "DS_PROMETHEUS",
+        "definition": "label_values(litmuschaos_awaited_experiments{app=~\"chaos-exporter\"}, chaosresult_name)",
+        "description": "Chaos results",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Chaos Result",
+        "multi": true,
+        "name": "chaosresult_name",
+        "options": [],
+        "query": {
+          "query": "label_values(litmuschaos_awaited_experiments{app=~\"chaos-exporter\"}, chaosresult_name)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "datasource": "DS_PROMETHEUS",
+        "definition": "label_values(litmuschaos_experiment_verdict{app=~\"chaos-exporter\"}, chaosengine_context)",
+        "description": "Chaos Engine contexts",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Chaos Engine context",
+        "multi": true,
+        "name": "chaosengine_context",
+        "options": [],
+        "query": {
+          "query": "label_values(litmuschaos_experiment_verdict{app=~\"chaos-exporter\"}, chaosengine_context)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {
+    "collapse": false,
+    "enable": true,
+    "hidden": false,
+    "notice": false,
+    "now": true,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "status": "Stable",
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ],
+    "type": "timepicker"
+  },
+  "timezone": "browser",
+  "title": "Demo Sock-Shop Performance",
+  "uid": "QV1KG6nnz1",
+  "version": 5
+}
