@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cle-server-config
+  namespace: cle-production
+data:
+  DataBaseServer: mongodb://mongo-service:27017
+  DB_USER: admin
+  DB_PASSWORD: 1234
+  JWTSecret: litmus-portal@123
