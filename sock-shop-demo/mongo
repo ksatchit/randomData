@@ -21,9 +21,6 @@ spec:
           ports:
             - containerPort: 27017
           imagePullPolicy: Always
-          volumeMounts:
-            - name: mongo-persistent-storage
-              mountPath: /data/db
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
               valueFrom:
