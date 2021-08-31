@@ -46,4 +46,3 @@ spec:
       targetPort: 27017
   selector:
     component: database
-© 2021 GitHub, Inc.
