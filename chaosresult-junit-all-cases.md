@@ -54,7 +54,7 @@ Note:
 - Very similar to previous schema
 - Runtime generation of an existing junit template based on chaosdetails captured
 - Since it is runtime generated, we will also have extra info - such as run_duration, app reschedule/startup/recovery time etc., (which is not available with offline render)
-- This may be placed/written into a configmap at the end of the experiment for further format/extraction by users.
+- This may be placed/written into a `configmap` at the end of the experiment for further format/extraction by users.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
