@@ -4,6 +4,8 @@ Note:
 
 - A native xUnit result schema for LitmusChaos (just like there is jUnit schema for jenkins et al)
 - LitmusChaos can provide a parser for rendering this in a standardized/beautified html format
+- Can be offline OR runtime generated
+- Also rendered in chaos-center
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
