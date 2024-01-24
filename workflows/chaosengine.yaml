@@ -21,11 +21,7 @@ spec:
             - name: NETWORK_INTERFACE
               value: 'eth0'
             - name: NETWORK_PACKET_LOSS_PERCENTAGE
-              value: '100'
-            - name: CONTAINER_RUNTIME
-              value: 'docker' 
-            - name: SOCKET_PATH
-              value: '/var/run/docker.sock'                
+              value: '100'              
             - name: TARGET_PODS
               value: 'cluster1-pxc-1'                
             - name: DESTINATION_HOSTS
