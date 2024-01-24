@@ -1,0 +1,32 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: percona-network-chaos
+  namespace: litmus
+spec:
+  appinfo:
+    appns: default
+    applabel: 'app.kubernetes.io/name=percona-xtradb-cluster'
+    appkind: statefulset
+  jobCleanUpPolicy: retain
+  engineState: active
+  chaosServiceAccount: litmus-admin
+  experiments:
+    - name: pod-network-loss
+      spec:
+        components:
+          env:
+            - name: TOTAL_CHAOS_DURATION
+              value: '10' 
+            - name: NETWORK_INTERFACE
+              value: 'eth0'
+            - name: NETWORK_PACKET_LOSS_PERCENTAGE
+              value: '100'
+            - name: CONTAINER_RUNTIME
+              value: 'docker' 
+            - name: SOCKET_PATH
+              value: '/var/run/docker.sock'                
+            - name: TARGET_PODS
+              value: 'cluster1-pxc-1'                
+            - name: DESTINATION_HOSTS
+              value: 'cluster1-pxc-0,cluster1-pxc-2'
