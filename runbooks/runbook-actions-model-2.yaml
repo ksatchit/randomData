@@ -66,8 +66,16 @@ metadata:
         id: 123456
         finishedAt: "2024-12-18T20:43:10Z" 
         children: 
-          - check-pod-phase-for-deployment-replicas    
-          - check-container-readiness-for-deployment-replicas
+          - check-pod-phase-for-deployment-replicas: 
+              childId: 11223344 
+              phase: Succeeded
+              startedAt: "2024-12-18T20:39:42Z"
+              finishedAt: "2024-12-18T20:43:10Z"
+          - check-container-readiness-for-deployment-replicas:
+              childId: 12233445 
+              phase: Succeeded
+              startedAt: "2024-12-18T20:39:42Z"
+              finishedAt: "2024-12-18T20:43:10Z"
         finalApprovalCount: "2"
         approversList: "x, y"
         phase: Succeeded
