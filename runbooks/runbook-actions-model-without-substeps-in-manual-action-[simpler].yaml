@@ -1,0 +1,111 @@
+---
+apiVersion: harness-iro.io/v1alpha1
+kind: runbook
+metadata: 
+  name: verify-microservice-health
+  labels:
+    type: triage
+    platform: kubernetes
+  annotations:
+    source: |
+      {"runbookHubId": "kubernetes-kb", "kbId": "kb101"} 
+  spec: 
+    owners:
+      users: "sagar.kr@harness.io, raj.das@harness.io"
+      userGroups: "" 
+    actions:
+      - name: check-deployment-resources-on-the-cluster
+        owner: "karthik.s@harness.io"
+        approvers: 
+          users: ""
+          userGroups: "cloud-engg"
+          minApprovalCount: 2
+        provider: harness 
+        connector: ""  
+        type: manual
+        spec:
+          tasks: 
+            - description: check-pod-phase-for-deployment-replicas
+              owner: "karthik.s@harness.io"
+            - description: check-container-readiness-for-deployment-replicas
+              owner: "shubham.chaudhary@harness.io"
+      - name: check-service-availability-metrics-on-datadog
+        owner: "shovan.maity@harness.io"
+        approvers: 
+          users: 
+          userGroups: "cloud-engg"
+          minApprovalCount: "1"
+        provider: datadog
+        connector: datadog-connector
+        type: raw-metrics
+        spec: 
+          metric: "{}"
+          evaluationPeriod: "now-5m" 
+          operation: avg
+      - name: run-sanity-pipeline-for-said-microservices
+        owner: "adarsh.kumar@harness.io"
+        approvers: 
+          users: 
+          userGroups: "mgr"
+          minApprovalCount: "2"
+        provider: harness
+        connector: ""
+        type: pipeline
+        spec: 
+          account: ""
+          org: ""
+          project: ""
+          pipelineId: "{}"
+  status:     
+    startedAt: "2024-12-18T20:39:42Z"
+    phase: In-Progress
+    progress: 2/3
+    finishedAt: 
+    actions:
+      check-deployment-resources-on-the-cluster: 
+        id: 123456
+        finishedAt: "2024-12-18T20:43:10Z" 
+        children: 
+          - check-pod-phase-for-deployment-replicas: 
+              childId: 11223344 
+              phase: Succeeded
+              startedAt: "2024-12-18T20:39:42Z"
+              finishedAt: "2024-12-18T20:43:10Z"
+          - check-container-readiness-for-deployment-replicas:
+              childId: 12233445 
+              phase: Succeeded
+              startedAt: "2024-12-18T20:39:42Z"
+              finishedAt: "2024-12-18T20:43:10Z"
+        finalApprovalCount: "2"
+        approversList: "x, y"
+        phase: Succeeded
+        progress: 2/2 
+        startedAt: "2024-12-18T20:39:42Z"
+        provider: harness
+        type: manual
+        reference: ""
+     check-service-availability-metrics-on-dynatrace: 
+       id: 789101112
+       finishedAt: "2024-12-18T20:45:10Z" 
+       children: []
+       approversList: "x, y"
+       phase: Succeeded
+       progress: 1/1 
+       startedAt: "2024-12-18T20:40:42Z"
+       provider: datadog
+       type: raw-metrics
+       reference: "link-to-execution-log-of-the-datadog-metric-query"
+     run-sanity-pipeline-for-said-microservices: 
+       id: 13141516
+       finishedAt: "" 
+       children: []
+       approversList: ""
+       phase: In-Progress
+       progress: 1/1 
+       startedAt: "2024-12-18T20:43:42Z"
+       provider: datadog
+       type: raw-metrics 
+       reference: "link-to-pipeline-execution-view"
+          
+          
+          
