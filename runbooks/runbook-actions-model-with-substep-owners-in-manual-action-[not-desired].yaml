@@ -24,10 +24,12 @@ metadata:
         connector: ""  
         type: manual
         spec:
-          tasks: 
-            - description: check-pod-phase-for-deployment-replicas
+          actionItems: 
+            - name: check-pod-phase-for-deployment-replicas
+              description: ""
               owner: "karthik.s@harness.io"
-            - description: check-container-readiness-for-deployment-replicas
+            - name: check-container-readiness-for-deployment-replicas
+              description: ""
               owner: "shubham.chaudhary@harness.io"
       - name: check-service-availability-metrics-on-datadog
         owner: "shovan.maity@harness.io"
