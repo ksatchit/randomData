@@ -79,7 +79,6 @@ metadata:
        id: 789101112
        finishedAt: "2024-12-18T20:45:10Z" 
        children: []
-       finalApprovalCount: "2"
        approversList: "x, y"
        phase: Succeeded
        progress: 1/1 
@@ -90,7 +89,6 @@ metadata:
        id: 13141516
        finishedAt: "" 
        children: []
-       finalApprovalCount: ""
        approversList: ""
        phase: In-Progress
        progress: 1/1 
