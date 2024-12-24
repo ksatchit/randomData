@@ -75,6 +75,7 @@ metadata:
         startedAt: "2024-12-18T20:39:42Z"
         provider: harness
         type: manual
+        reference: ""
      check-service-availability-metrics-on-dynatrace: 
        id: 789101112
        finishedAt: "2024-12-18T20:45:10Z" 
@@ -85,6 +86,7 @@ metadata:
        startedAt: "2024-12-18T20:40:42Z"
        provider: datadog
        type: raw-metrics
+       reference: "link-to-execution-log-of-the-datadog-metric-query"
      run-sanity-pipeline-for-said-microservices: 
        id: 13141516
        finishedAt: "" 
@@ -95,6 +97,7 @@ metadata:
        startedAt: "2024-12-18T20:43:42Z"
        provider: datadog
        type: raw-metrics 
+       reference: "link-to-pipeline-execution-view"
           
           
           
