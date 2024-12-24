@@ -1,0 +1,64 @@
+---
+apiVersion: harness.io/v1alpha1
+kind: runbook
+metadata: 
+  name: verify-microservice-health
+  labels:
+    type: triage
+    platform: kubernetes
+  annotations:
+    source: |
+      {"runbookHubId": "kubernetes-kb", "kbId": "kb101"} 
+  spec: 
+    owners:
+      users: "sagar.kr@harness.io, raj.das@harness.io"
+      userGroups: "" 
+    actions:
+      - name: check-deployment-resources-on-the-cluster
+        owner: "karthik.s@harness.io"
+        approvers: 
+          users: ""
+          userGroups: "cloud-engg"
+          minApprovalCount: 2
+        provider: harness 
+        connector: ""  
+        type: manual
+        spec:
+          tasks: 
+            - description: check-pod-phase-for-deployment-replicas
+              owner: "karthik.s@harness.io"
+            - description: check-pod-phase-for-deployment-replicas
+              owner: "shubham.chaudhary@harness.io"
+      - name: check-service-availability-metrics-on-dynatrace
+        owner: "shovan.maity@harness.io"
+        approvers: 
+          users: 
+          userGroups: "cloud-engg"
+          minApprovalCount: "1"
+        provider: datadog
+        connector: datadog-connector
+        type: raw-metrics
+        spec: 
+          metric: "{}"
+          evaluationPeriod: "now-5m" 
+          operation: avg
+      - name: run-sanity-pipeline-for-said-microservices
+        owner: "adarsh.kumar@harness.io"
+        approvers: 
+          users: 
+          userGroups: "mgr"
+          minApprovalCount: "2"
+        provider: harness
+        connector: ""
+        type: pipeline
+        spec: 
+          account: ""
+          org: ""
+          project: ""
+          pipelineId: "{}"
+
+      
+
+          
+          
+          
