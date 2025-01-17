@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: event-feeder-job
+  generateName: event-feeder-job-prereq-
 spec:
   template:
     metadata:
@@ -13,7 +13,7 @@ spec:
         name: event-feeder
         env:
           - name: RAMP_TIME
-            value: "120"
+            value: "1"
           - name: INTERVAL
             value: "1"
           - name: ENVIRONMENT_ID
@@ -21,7 +21,7 @@ spec:
           - name: SOURCE
             value: "K8sWatcher"
           - name: INFRA_ID
-            value: "infracluster2"
+            value: "infracluster1"
         envFrom:
           - secretRef:
               name: event-feeder
