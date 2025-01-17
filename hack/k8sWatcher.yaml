@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-watcher
+  namespace: default
+spec:
+  replicas: 1  # Number of replicas for the deployment
+  selector:
+    matchLabels:
+      app: cs
+  template:
+    metadata:
+      labels:
+        app: cs
+    spec:
+      serviceAccountName: litmus-admin
+      containers:
+        - image: shubh214/config-scanner:1.11.0
+          name: recommendation
+          envFrom:
+            - secretRef:
+                name: config-scanner
+            - configMapRef:
+                name: config-scanner
+          resources: {}
+      restartPolicy: Always  # Set to Always for deployments
