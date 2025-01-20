@@ -22,7 +22,7 @@ spec:
           - name: SOURCE
             value: "K8sWatcher"
           - name: INFRA_ID
-            value: "infracluster1"
+            value: "prodecommerce"
         envFrom:
           - secretRef:
               name: event-feeder
