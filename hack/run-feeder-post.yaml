@@ -16,7 +16,7 @@ spec:
           - name: RAMP_TIME
             value: "10"
           - name: INTERVAL
-            value: "1"
+            value: "4"
           - name: ENVIRONMENT_ID
             value: "test"
           - name: SOURCE
