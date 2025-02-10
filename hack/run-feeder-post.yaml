@@ -2,7 +2,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   generateName: event-feeder-job-post-
-  namespace: "shubhamch"
 spec:
   template:
     metadata:
@@ -10,7 +9,7 @@ spec:
         app: event-feeder
     spec:
       containers:
-      - image: shubh214/event-feeder:1.5.0
+      - image: shubh214/event-feeder:1.6.0
         name: event-feeder
         env:
           - name: RAMP_TIME
