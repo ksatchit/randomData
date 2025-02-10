@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   generateName: event-feeder-job-prereq-
+  namespace: feeders
 spec:
   template:
     metadata:
