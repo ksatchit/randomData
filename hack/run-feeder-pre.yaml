@@ -2,7 +2,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   generateName: event-feeder-job-prereq-
-  namespace: "shubhamch"
 spec:
   template:
     metadata:
@@ -10,9 +9,11 @@ spec:
         app: event-feeder
     spec:
       containers:
-      - image: shubh214/event-feeder:1.3.0
+      - image: shubh214/event-feeder:1.6.0
         name: event-feeder
         env:
+          - name: TYPE
+            value: "pre"
           - name: RAMP_TIME
             value: "1"
           - name: INTERVAL
