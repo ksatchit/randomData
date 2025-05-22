@@ -2,7 +2,7 @@
 
 # Set your Splunk Cloud token and base URL
 SPLUNK_TOKEN="<Your_Token_Here>"
-SPLUNK_URL="https://emiratesgroup.splunkcloud.com:8089"
+SPLUNK_URL="https://testgroup.splunkcloud.com:8089"
 SEARCH_QUERY='search index=_metrics metric_name="cpu.usage" | stats avg(cpu.usage) by host'
 OUTPUT_MODE="json"
 
