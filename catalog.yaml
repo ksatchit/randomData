@@ -1,0 +1,28 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service
+  description: A sample service demonstrating Backstage catalog integration.
+  annotations:
+    github.com/project-slug: backstage/example-service
+  tags:
+    - microservice
+    - backend
+    - nodejs
+  links:
+    - url: https://example.com/docs/example-service
+      title: Documentation
+      icon: docs
+    - url: https://github.com/backstage/example-service
+      title: GitHub Repository
+      icon: github
+spec:
+  type: service
+  lifecycle: production
+  owner: team-alpha
+  system: example-system
+  dependsOn:
+    - component:dependency-service-a
+    - component:dependency-service-b
+  providesApis:
+    - example-api
